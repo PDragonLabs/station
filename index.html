@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./pop.css" />
+  <link rel="stylesheet" href="./desk.css" />
 </head>
 <body>
   <div class="atmos" id="atmos"></div>
@@ -25,7 +26,7 @@
         <button class="btn" id="export-cat" type="button">export json</button>
         <button class="btn" id="import-btn" type="button">import json</button>
         <button class="btn" id="reset-cat" type="button">reset house</button>
-        <button class="btn" id="ai-open" type="button">ai popout</button>
+        <button class="btn" id="ai-open" type="button">ai settings</button>
         <input id="import-file" type="file" accept="application/json,.json" hidden />
       </div>
     </aside>
@@ -56,44 +57,48 @@
               <button class="btn" id="next" type="button">next</button>
               <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">soundcloud</a>
               <button class="btn" id="share" type="button">share</button>
-              <button class="btn" id="ai-open-2" type="button">ai</button>
+              <button class="btn" id="ai-open-2" type="button">settings</button>
             </div>
           </div>
         </div>
       </section>
-      <section class="brain" aria-label="Station brain">
-        <div class="booth-head">
-          <div>
-            <div class="rail-label">station brain · on-device</div>
-            <p class="booth-track">talks from the JSON on this tape. popout holds keys and personas.</p>
+
+      <section class="desk" aria-label="Verses and chat">
+        <section class="sheet" aria-label="Lyrics">
+          <div class="booth-head">
+            <div>
+              <div class="rail-label">lyrics · local json</div>
+              <p class="booth-track" id="lyric-title">—</p>
+            </div>
+            <span class="rail-note" id="lyric-state">no verses yet</span>
           </div>
-          <span class="rail-note" id="brain-state">on-device</span>
-        </div>
-        <div class="chips" id="chips"></div>
-        <div class="log" id="brain-log"></div>
-        <form class="say" id="ask">
-          <input id="ask-line" maxlength="280" placeholder="ask the room about this song…" autocomplete="off" />
-          <button class="btn" type="submit">ask</button>
-        </form>
-      </section>
-      <section class="sheet" aria-label="Lyrics">
-        <div class="booth-head">
-          <div>
-            <div class="rail-label">lyrics · local json</div>
-            <p class="booth-track" id="lyric-title">—</p>
+          <pre id="lyric-view" class="lyric-view"></pre>
+          <textarea id="lyric-edit" class="lyric-edit" rows="10" placeholder="paste verses here. they stay in this browser until you export json."></textarea>
+          <div class="actions">
+            <button class="btn" id="save-lyrics" type="button">save verses</button>
           </div>
-          <span class="rail-note" id="lyric-state">no verses yet</span>
-        </div>
-        <pre id="lyric-view" class="lyric-view"></pre>
-        <textarea id="lyric-edit" class="lyric-edit" rows="8" placeholder="paste verses here. they stay in this browser until you export json."></textarea>
-        <div class="actions">
-          <button class="btn" id="save-lyrics" type="button">save verses</button>
-        </div>
+        </section>
+        <section class="talk brain" aria-label="Station brain">
+          <div class="booth-head">
+            <div>
+              <div class="rail-label">chat · this tape</div>
+              <p class="booth-track">verses stay on the left. keys live in settings.</p>
+            </div>
+            <span class="rail-note" id="brain-state">on-device</span>
+          </div>
+          <div class="chips" id="chips"></div>
+          <div class="log" id="ai-log"></div>
+          <form class="say" id="ai-ask">
+            <input id="ai-line" maxlength="400" placeholder="next line, mix, chords…" autocomplete="off" />
+            <button class="btn" type="submit">ask</button>
+          </form>
+        </section>
       </section>
+
       <section class="booth" aria-label="Song chat">
         <div class="booth-head">
           <div>
-            <div class="rail-label">song chat · local</div>
+            <div class="rail-label">song notes · local</div>
             <p class="booth-track" id="chat-track">—</p>
           </div>
           <input id="who" class="who" maxlength="24" placeholder="your name" />
@@ -113,7 +118,7 @@
       </div>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        API keys live only in this browser. The public Pages crate never carries them.
+        Verses and the model sit on one desk. Settings slide in from the right.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
@@ -122,12 +127,13 @@
       </footer>
     </div>
   </div>
+
   <div class="pop" id="ai-pop" hidden>
     <div class="pop-card">
       <div class="booth-head">
         <div>
-          <div class="rail-label">ai popout · local config</div>
-          <p class="booth-track">Jan · xAI · custom endpoint. Keys never go to GitHub.</p>
+          <div class="rail-label">ai settings</div>
+          <p class="booth-track">Jan · xAI · custom. Keys stay in this browser.</p>
         </div>
         <button class="btn" id="ai-close" type="button">close</button>
       </div>
@@ -141,13 +147,13 @@
           </select>
         </label>
         <label>base url
-          <input id="ai-url" placeholder="https://api.x.ai/v1" autocomplete="off" />
+          <input id="ai-url" placeholder="http://127.0.0.1:1337/v1" autocomplete="off" />
         </label>
         <label>api key
           <input id="ai-key" type="password" placeholder="stays in this browser" autocomplete="off" />
         </label>
         <label>model
-          <input id="ai-model" placeholder="grok-3 or jan model id" autocomplete="off" />
+          <input id="ai-model" placeholder="jan model id" autocomplete="off" />
         </label>
         <label>persona
           <select id="ai-persona"></select>
@@ -161,13 +167,9 @@
           <input id="ai-import-file" type="file" accept="application/json,.json" hidden />
         </div>
       </form>
-      <div class="log" id="ai-log"></div>
-      <form class="say" id="ai-ask">
-        <input id="ai-line" maxlength="400" placeholder="ask this model about the current tape…" autocomplete="off" />
-        <button class="btn" type="submit">ask</button>
-      </form>
     </div>
   </div>
+
   <script src="./brain.js"></script>
   <script src="./ai.js"></script>
   <script src="./app.js"></script>
