@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PDRAGONLABS Station</title>
+  <meta name="description" content="PDRAGONLABS station. SoundCloud is the deck. This is the room." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">PDRAGONLABS · 803</div>
+      <h1>Station</h1>
+      <p class="tag" id="tagline">SoundCloud is the deck. This is the room.</p>
+    </header>
+    <section class="deck">
+      <iframe id="deck" allow="autoplay" title="SoundCloud deck" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2393461635&color=8b3a4a&auto_play=false"></iframe>
+      <div class="now">
+        <span>NOW · <strong id="now-title">loading</strong></span>
+        <span>backend: SoundCloud widget</span>
+      </div>
+    </section>
+    <section class="grid" id="grid" aria-label="A-sides"></section>
+    <footer>
+      Audio stays on SoundCloud. This page only points the tuner.
+      <div class="links">
+        <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
+        <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
+        <a href="https://github.com/PDragonLabs/station">source</a>
+      </div>
+    </footer>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>

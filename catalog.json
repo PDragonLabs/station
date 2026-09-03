@@ -1,0 +1,31 @@
+{
+  "station": "PDRAGONLABS Station",
+  "tagline": "SoundCloud is the deck. This is the room.",
+  "canonical": "https://soundcloud.com/pai-dj",
+  "satellite": "https://soundcloud.com/j-kast-603838038",
+  "credit": "Audio hosted on SoundCloud. PDRAGONLABS / TrXz by P.",
+  "tracks": [
+    {
+      "id": "803",
+      "title": "Collapse (803)",
+      "subtitle": "One Step From Collapse",
+      "artist": "PDRAGONLABS",
+      "duration": "4:23",
+      "soundcloud": "https://soundcloud.com/pai-dj/one-step-from-collapse-803",
+      "trackId": "2393461635",
+      "artwork": "https://i1.sndcdn.com/artworks-gnXUGrnVScz6UGNK-RgPrLg-t500x500.jpg",
+      "note": "The room after the clock gives out."
+    },
+    {
+      "id": "static-ext",
+      "title": "Static Between Stations extended",
+      "subtitle": "the drive between frequencies",
+      "artist": "PDRAGONLABS",
+      "duration": "7:59",
+      "soundcloud": "https://soundcloud.com/pai-dj/static-between-stations-1",
+      "trackId": "2384395311",
+      "artwork": "https://i1.sndcdn.com/artworks-Wmb2OSN50U02DRWo-zeEAiw-t500x500.jpg",
+      "note": "The tuner left in the drift."
+    }
+  ]
+}

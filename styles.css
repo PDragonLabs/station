@@ -1,0 +1,40 @@
+:root {
+  --bg: #120814;
+  --bg2: #1c0f18;
+  --paper: #c4a07a;
+  --ink: #e8d6c0;
+  --muted: #9a7f72;
+  --line: rgba(196, 160, 122, 0.28);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(107, 61, 106, 0.35), transparent 50%),
+    radial-gradient(800px 400px at 110% 10%, rgba(194, 59, 42, 0.18), transparent 45%),
+    var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+}
+.wrap { max-width: 920px; margin: 0 auto; padding: 36px 20px 80px; }
+header { border-bottom: 1px solid var(--line); padding-bottom: 22px; margin-bottom: 28px; }
+.brand { letter-spacing: 0.28em; font-size: 11px; color: var(--paper); text-transform: uppercase; }
+h1 { font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500; font-size: clamp(28px, 5vw, 44px); margin: 8px 0 6px; }
+.tag { color: var(--muted); margin: 0; max-width: 36em; }
+.deck { background: #0a0609; border: 1px solid var(--line); overflow: hidden; margin-bottom: 22px; }
+.deck iframe { display: block; width: 100%; height: 166px; border: 0; }
+.now { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 14px; font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); }
+.now strong { color: var(--ink); font-weight: 500; }
+.grid { display: grid; gap: 14px; }
+@media (min-width: 700px) { .grid { grid-template-columns: 1fr 1fr; } }
+.card { display: grid; grid-template-columns: 96px 1fr; gap: 14px; padding: 12px; background: linear-gradient(180deg, var(--bg2), #140a12); border: 1px solid var(--line); cursor: pointer; text-align: left; color: inherit; width: 100%; }
+.card:hover, .card.active { border-color: var(--paper); }
+.card img { width: 96px; height: 96px; object-fit: cover; filter: saturate(0.85) contrast(1.05); }
+.card h2 { font-size: 16px; margin: 0 0 4px; font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500; }
+.card .sub { color: var(--paper); font-size: 12px; margin: 0 0 8px; }
+.card .note { color: var(--muted); font-size: 13px; margin: 0; }
+.meta { margin-top: 10px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+footer { margin-top: 36px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+footer a { color: var(--paper); }
+.links { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
