@@ -43,7 +43,7 @@ function matches(track, q, genre) {
 }
 function pickCatalog(house) {
   const stored = loadJSON(KEY_CAT, null);
-  if (stored && Array.isArray(stored.tracks) && stored.tracks.length >= (house.tracks || []).length) return { catalog: stored, local: true };
+  if (stored && Array.isArray(stored.tracks) && stored.tracks.length > (house.tracks || []).length) return { catalog: stored, local: true };
   return { catalog: house, local: false };
 }
 function versesFor(track, overlay) {
@@ -60,6 +60,8 @@ async function boot() {
   const genresEl = document.getElementById("genres");
   const logEl = document.getElementById("log");
   const whoEl = document.getElementById("who");
+  const brainLog = document.getElementById("brain-log");
+  const chips = document.getElementById("chips");
   whoEl.value = localStorage.getItem(KEY_WHO) || "";
 
   let picked = pickCatalog(house);
@@ -78,8 +80,37 @@ async function boot() {
     document.getElementById("tagline").textContent = catalog.tagline || house.tagline;
     document.getElementById("booth-state").textContent = local ? "local crate loaded" : "house catalog · " + tracks.length;
   }
-
   function visible() { return tracks.filter((t) => matches(t, q.value.trim(), genre)); }
+
+  function askBrain(text) {
+    const track = tracks[index];
+    const line = (text || "").trim();
+    if (!track || !line || !window.Brain || !brainLog) return;
+    const answer = Brain.ask(track, overlay, line);
+    brainLog.innerHTML += "<p><strong>you</strong> " + line + "</p><p class=\"empty\">" + answer.replace(/\n/g, "<br>") + "</p>";
+    brainLog.scrollTop = brainLog.scrollHeight;
+  }
+
+  if (chips && window.Brain) {
+    chips.innerHTML = "";
+    Brain.chips.forEach((c) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "chip";
+      btn.textContent = c.label;
+      btn.addEventListener("click", () => askBrain(c.label));
+      chips.appendChild(btn);
+    });
+  }
+  const askForm = document.getElementById("ask");
+  if (askForm) {
+    askForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const input = document.getElementById("ask-line");
+      askBrain(input.value);
+      input.value = "";
+    });
+  }
 
   function renderLyrics() {
     const track = tracks[index];
@@ -92,7 +123,6 @@ async function boot() {
       ? "private · this browser"
       : (track.lyrics ? "from json" : "empty");
   }
-
   function renderChat() {
     const track = tracks[index];
     if (!track) return;
@@ -103,7 +133,6 @@ async function boot() {
       : "<p class=\"empty\">no lines on this tape yet</p>";
     logEl.scrollTop = logEl.scrollHeight;
   }
-
   function renderPromo() {
     if (!promoEl) return;
     const ids = catalog.featured || house.featured || [];
@@ -139,6 +168,10 @@ async function boot() {
     document.getElementById("open-sc").href = track.soundcloud || "#";
     document.getElementById("pos").textContent = (index + 1) + " / " + tracks.length;
     history.replaceState(null, "", "#" + track.id);
+    const deep = window.Brain && Brain.is803(track);
+    document.body.classList.toggle("deep-803", !!deep);
+    const badge = document.getElementById("deep-badge");
+    if (badge) badge.hidden = !deep;
     document.querySelectorAll(".card").forEach((el) => {
       el.classList.toggle("active", el.dataset.id === track.id);
     });
@@ -165,7 +198,6 @@ async function boot() {
       genresEl.appendChild(btn);
     });
   }
-
   function renderList() {
     const shown = visible();
     grid.innerHTML = "";
@@ -192,7 +224,6 @@ async function boot() {
       });
     }
   }
-
   function refresh(keepId) {
     tracks = catalog.tracks || [];
     setState();
@@ -202,7 +233,6 @@ async function boot() {
     const i = keepId ? tracks.findIndex((t) => t.id === keepId) : tracks.findIndex((t) => "#" + t.id === location.hash);
     paint(i >= 0 ? i : 0, false);
   }
-
   function step(dir) {
     const vis = visible();
     if (!vis.length) return;
@@ -215,7 +245,6 @@ async function boot() {
   document.getElementById("next").addEventListener("click", () => step(1));
   q.addEventListener("input", renderList);
   whoEl.addEventListener("change", () => localStorage.setItem(KEY_WHO, whoEl.value.trim()));
-
   document.getElementById("save-lyrics").addEventListener("click", () => {
     const track = tracks[index];
     if (!track) return;
@@ -228,7 +257,6 @@ async function boot() {
     renderLyrics();
     renderList();
   });
-
   document.getElementById("say").addEventListener("submit", (e) => {
     e.preventDefault();
     const track = tracks[index];
@@ -241,7 +269,6 @@ async function boot() {
     document.getElementById("line").value = "";
     renderChat();
   });
-
   document.getElementById("export-cat").addEventListener("click", () => {
     const packed = JSON.parse(JSON.stringify(catalog));
     packed.tracks = packed.tracks.map((t) => {
@@ -266,9 +293,7 @@ async function boot() {
       const raw = JSON.parse(await file.text());
       catalog = normalizeCatalog(raw);
       if (raw.chats && typeof raw.chats === "object") chats = raw.chats;
-      catalog.tracks.forEach((t) => {
-        if (t.lyrics) overlay[t.id] = t.lyrics;
-      });
+      catalog.tracks.forEach((t) => { if (t.lyrics) overlay[t.id] = t.lyrics; });
       saveJSON(KEY_CAT, catalog);
       saveJSON(KEY_CHAT, chats);
       saveJSON(KEY_LYRICS, overlay);
