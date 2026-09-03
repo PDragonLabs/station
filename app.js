@@ -3,6 +3,12 @@ const KEY_CAT = "pdl.station.catalog";
 const KEY_CHAT = "pdl.station.chat";
 const KEY_WHO = "pdl.station.who";
 const KEY_LYRICS = "pdl.station.lyrics";
+const ALIAS = {
+  "803": "one-step-from-collapse-803",
+  "one-step-from-collapse-803": "803",
+  "static-ext": "static-between-stations-1",
+  "static-between-stations-1": "static-ext"
+};
 
 function widgetUrl(trackId, autoplay) {
   const params = new URLSearchParams({
@@ -49,6 +55,12 @@ function pickCatalog(house) {
 function versesFor(track, overlay) {
   if (!track) return "";
   return (overlay[track.id] || track.lyrics || "").trim();
+}
+function findTrack(list, id) {
+  return list.find((t) => t.id === id)
+    || list.find((t) => t.id === ALIAS[id])
+    || list.find((t) => (t.soundcloud || "").indexOf("/" + id) !== -1)
+    || list.find((t) => t.title && t.title.toLowerCase() === String(id).toLowerCase());
 }
 
 async function boot() {
@@ -124,11 +136,16 @@ async function boot() {
   }
   function renderPromo() {
     if (!promoEl) return;
-    const ids = catalog.featured || house.featured || [];
+    const ids = [];
+    (house.featured || []).concat(catalog.featured || []).forEach((id) => {
+      if (ids.indexOf(id) === -1) ids.push(id);
+    });
     promoEl.innerHTML = "";
+    const seen = {};
     ids.forEach((id) => {
-      const track = tracks.find((t) => t.id === id);
-      if (!track) return;
+      const track = findTrack(tracks, id);
+      if (!track || seen[track.id]) return;
+      seen[track.id] = true;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "promo-card";
@@ -262,6 +279,7 @@ async function boot() {
   });
   document.getElementById("export-cat").addEventListener("click", () => {
     const packed = JSON.parse(JSON.stringify(catalog));
+    packed.featured = packed.featured || house.featured;
     packed.tracks = packed.tracks.map((t) => {
       const copy = Object.assign({}, t);
       const v = versesFor(t, overlay);
