@@ -3,7 +3,7 @@ const KEY_AI = "pdl.station.ai";
 const DEFAULT_PERSONAS = {
   room: {
     name: "803 room",
-    prompt: "You are the room around Collapse (803): analog dusk, tape saturation, a clock that already gave out. Speak short. Stay with the track JSON (title, hook, lyrics, chords, production). Do not invent a different song."
+    prompt: "You are the room around Collapse (803): analog dusk, tape saturation, a clock that already gave out. Speak short. Stay with the track JSON. When asked for the next line, output ONE lyric line only. No title, no brackets, no explanation."
   },
   engineer: {
     name: "tape engineer",
@@ -11,7 +11,7 @@ const DEFAULT_PERSONAS = {
   },
   writer: {
     name: "lyric writer",
-    prompt: "You write the next line in the same voice as the lyrics on this tape. Keep the meter loose. No explanation unless asked."
+    prompt: "You write the next line in the same voice as the lyrics on this tape. When asked for a line, output ONE line only. No preface."
   },
   librarian: {
     name: "crate librarian",
@@ -59,6 +59,19 @@ function pickText(data) {
   const msg = data && data.choices && data.choices[0] && data.choices[0].message;
   if (!msg) return "";
   return (msg.content || msg.reasoning_content || "").trim();
+}
+function lastLyricLine(text) {
+  const lines = String(text || "").split(/\n/).map((l) => l.trim()).filter((l) => l && !/^\[/.test(l));
+  return lines.length ? lines[lines.length - 1] : "";
+}
+function dropOntoSheet(chunk) {
+  const box = document.getElementById("lyric-edit");
+  const line = (chunk || "").trim();
+  if (!box || !line) return false;
+  box.value = (box.value.replace(/\s+$/, "") + "\n" + line).replace(/^\n/, "");
+  const save = document.getElementById("save-lyrics");
+  if (save) save.click();
+  return true;
 }
 async function pingEndpoint(cfg) {
   if (cfg.provider === "device" || !cfg.baseUrl) return { ok: true, detail: "on-device brain — no network" };
@@ -146,6 +159,10 @@ function bootAI() {
   const pop = document.getElementById("ai-pop");
   if (!pop) return;
   let cfg = loadAI();
+  cfg.personas = Object.assign({}, DEFAULT_PERSONAS, cfg.personas || {});
+  Object.keys(DEFAULT_PERSONAS).forEach((id) => {
+    cfg.personas[id] = DEFAULT_PERSONAS[id];
+  });
   let lastReply = "";
   fillForm(cfg);
   setStatus(cfg.provider === "device" ? "on-device" : cfg.provider + " · " + (cfg.model || "no model"));
@@ -167,6 +184,7 @@ function bootAI() {
 
   document.getElementById("ai-save").addEventListener("click", () => {
     cfg = readForm(cfg);
+    cfg.personas = DEFAULT_PERSONAS;
     saveAI(cfg);
     setStatus("saved · " + cfg.provider + (cfg.apiKey ? " · key in browser" : ""));
   });
@@ -209,19 +227,18 @@ function bootAI() {
     }
   });
 
-  const drop = document.getElementById("drop-line");
-  if (drop) {
-    drop.addEventListener("click", () => {
-      const box = document.getElementById("lyric-edit");
-      const line = (lastReply || "").trim();
-      if (!box || !line) {
-        setStatus("no reply to drop yet");
-        return;
-      }
-      box.value = (box.value.replace(/\s+$/, "") + "\n" + line).replace(/^\n/, "");
-      const save = document.getElementById("save-lyrics");
-      if (save) save.click();
-      setStatus("dropped onto verses");
+  const dropLine = document.getElementById("drop-line");
+  if (dropLine) {
+    dropLine.addEventListener("click", () => {
+      const ok = dropOntoSheet(lastLyricLine(lastReply));
+      setStatus(ok ? "dropped last line" : "no reply to drop yet");
+    });
+  }
+  const dropStanza = document.getElementById("drop-stanza");
+  if (dropStanza) {
+    dropStanza.addEventListener("click", () => {
+      const ok = dropOntoSheet(lastReply);
+      setStatus(ok ? "dropped whole reply" : "no reply to drop yet");
     });
   }
 
