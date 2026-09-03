@@ -17,13 +17,10 @@ function widgetUrl(trackId, autoplay) {
   });
   return PLAYER + "?" + params.toString();
 }
-
 function loadJSON(key, fallback) {
   try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch (_) { return fallback; }
 }
-function saveJSON(key, val) {
-  localStorage.setItem(key, JSON.stringify(val));
-}
+function saveJSON(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 function download(name, obj) {
   const blob = new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -43,35 +40,40 @@ function matches(track, q, genre) {
   const hay = [track.title, track.subtitle, track.note, track.hook, track.id, track.genre].join(" ").toLowerCase();
   return hay.includes(q.toLowerCase());
 }
+function pickCatalog(house) {
+  const stored = loadJSON(KEY_CAT, null);
+  if (stored && Array.isArray(stored.tracks) && stored.tracks.length >= (house.tracks || []).length) return { catalog: stored, local: true };
+  return { catalog: house, local: false };
+}
 
 async function boot() {
   const house = await fetch("./catalog.json").then((r) => r.json());
   const iframe = document.getElementById("deck");
   const grid = document.getElementById("grid");
+  const promoEl = document.getElementById("promo");
   const q = document.getElementById("q");
   const genresEl = document.getElementById("genres");
   const logEl = document.getElementById("log");
   const whoEl = document.getElementById("who");
   whoEl.value = localStorage.getItem(KEY_WHO) || "";
 
-  let catalog = loadJSON(KEY_CAT, null) || house;
+  let picked = pickCatalog(house);
+  let catalog = picked.catalog;
+  let local = picked.local;
   let chats = loadJSON(KEY_CHAT, {});
   let tracks = catalog.tracks;
   let genre = "";
   let index = 0;
-  let local = !!loadJSON(KEY_CAT, null);
 
   document.getElementById("canonical").href = catalog.canonical || house.canonical;
   document.getElementById("satellite").href = catalog.satellite || house.satellite;
 
   function setState() {
     document.getElementById("tagline").textContent = catalog.tagline || house.tagline;
-    document.getElementById("booth-state").textContent = local ? "local crate loaded" : "house catalog";
+    document.getElementById("booth-state").textContent = local ? "local crate loaded" : "house catalog · " + tracks.length;
   }
 
-  function visible() {
-    return tracks.filter((t) => matches(t, q.value.trim(), genre));
-  }
+  function visible() { return tracks.filter((t) => matches(t, q.value.trim(), genre)); }
 
   function renderChat() {
     const track = tracks[index];
@@ -82,6 +84,26 @@ async function boot() {
       ? lines.map((m) => "<p><strong>" + m.who + "</strong> " + m.text + "</p>").join("")
       : "<p class=\"empty\">no lines on this tape yet</p>";
     logEl.scrollTop = logEl.scrollHeight;
+  }
+
+  function renderPromo() {
+    if (!promoEl) return;
+    const ids = catalog.featured || house.featured || [];
+    promoEl.innerHTML = "";
+    ids.forEach((id) => {
+      const track = tracks.find((t) => t.id === id);
+      if (!track) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "promo-card";
+      btn.innerHTML =
+        '<img src="' + (track.artwork || "") + '" alt="">' +
+        '<div><div class="promo-kicker">attractor</div><h2>' + track.title + "</h2>" +
+        '<p class="hook">' + (track.hook || track.note || "") + "</p>" +
+        '<p class="note">' + (track.note || "") + "</p></div>";
+      btn.addEventListener("click", () => paint(tracks.indexOf(track), true));
+      promoEl.appendChild(btn);
+    });
   }
 
   function paint(i, autoplay) {
@@ -99,6 +121,9 @@ async function boot() {
     document.getElementById("open-sc").href = track.soundcloud || "#";
     document.getElementById("pos").textContent = (index + 1) + " / " + tracks.length;
     history.replaceState(null, "", "#" + track.id);
+    document.querySelectorAll(".card, .promo-card").forEach((el) => {
+      el.classList.toggle("active", el.querySelector("h2") && el.querySelector("h2").textContent === track.title);
+    });
     document.querySelectorAll(".card").forEach((el) => {
       el.classList.toggle("active", el.dataset.id === track.id);
     });
@@ -154,6 +179,7 @@ async function boot() {
   function refresh(keepId) {
     tracks = catalog.tracks || [];
     setState();
+    renderPromo();
     renderGenres();
     renderList();
     const i = keepId ? tracks.findIndex((t) => t.id === keepId) : tracks.findIndex((t) => "#" + t.id === location.hash);
@@ -172,7 +198,6 @@ async function boot() {
   document.getElementById("next").addEventListener("click", () => step(1));
   q.addEventListener("input", renderList);
   whoEl.addEventListener("change", () => localStorage.setItem(KEY_WHO, whoEl.value.trim()));
-
   document.getElementById("say").addEventListener("submit", (e) => {
     e.preventDefault();
     const track = tracks[index];
@@ -185,7 +210,6 @@ async function boot() {
     document.getElementById("line").value = "";
     renderChat();
   });
-
   document.getElementById("export-cat").addEventListener("click", () => {
     download("pdragonlabs-station.json", {
       station: catalog.station || "PDRAGONLABS Station",
@@ -194,9 +218,7 @@ async function boot() {
       chats: chats
     });
   });
-  document.getElementById("import-btn").addEventListener("click", () => {
-    document.getElementById("import-file").click();
-  });
+  document.getElementById("import-btn").addEventListener("click", () => document.getElementById("import-file").click());
   document.getElementById("import-file").addEventListener("change", async (e) => {
     const file = e.target.files && e.target.files[0];
     e.target.value = "";
@@ -211,7 +233,6 @@ async function boot() {
       refresh();
     } catch (err) {
       document.getElementById("booth-state").textContent = "import failed — need tracks[]";
-      console.error(err);
     }
   });
   document.getElementById("reset-cat").addEventListener("click", () => {
@@ -220,7 +241,6 @@ async function boot() {
     local = false;
     refresh();
   });
-
   document.getElementById("share").addEventListener("click", async () => {
     const track = tracks[index];
     const url = location.origin + location.pathname + "#" + track.id;
@@ -233,7 +253,6 @@ async function boot() {
       }
     } catch (_) {}
   });
-
   window.addEventListener("keydown", (e) => {
     if (e.target.tagName === "INPUT") {
       if (e.key === "Escape") { e.target.blur(); if (e.target === q) { q.value = ""; renderList(); } }
@@ -243,7 +262,6 @@ async function boot() {
     if (e.key === "ArrowLeft" || e.key === "k") step(-1);
     if (e.key === "/") { e.preventDefault(); q.focus(); }
   });
-
   refresh();
 }
 
