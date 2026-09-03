@@ -62,7 +62,6 @@
           </div>
         </div>
       </section>
-
       <section class="desk" aria-label="Verses and chat">
         <section class="sheet" aria-label="Lyrics">
           <div class="booth-head">
@@ -82,7 +81,7 @@
           <div class="booth-head">
             <div>
               <div class="rail-label">chat · this tape</div>
-              <p class="booth-track">verses stay on the left. keys live in settings.</p>
+              <p class="booth-track">verses stay on the left. drop a reply onto the sheet.</p>
             </div>
             <span class="rail-note" id="brain-state">on-device</span>
           </div>
@@ -92,9 +91,11 @@
             <input id="ai-line" maxlength="400" placeholder="next line, mix, chords…" autocomplete="off" />
             <button class="btn" type="submit">ask</button>
           </form>
+          <div class="actions" style="margin-top:10px">
+            <button class="btn" id="drop-line" type="button">drop last reply onto verses</button>
+          </div>
         </section>
       </section>
-
       <section class="booth" aria-label="Song chat">
         <div class="booth-head">
           <div>
@@ -127,7 +128,6 @@
       </footer>
     </div>
   </div>
-
   <div class="pop" id="ai-pop" hidden>
     <div class="pop-card">
       <div class="booth-head">
@@ -169,7 +169,6 @@
       </form>
     </div>
   </div>
-
   <script src="./brain.js"></script>
   <script src="./ai.js"></script>
   <script src="./app.js"></script>
