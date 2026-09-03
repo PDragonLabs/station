@@ -3,7 +3,7 @@ const KEY_AI = "pdl.station.ai";
 const DEFAULT_PERSONAS = {
   room: {
     name: "803 room",
-    prompt: "You are the room around Collapse (803): analog dusk, tape saturation, a clock that already gave out. Speak short. Stay with the track JSON. When asked for the next line, output ONE lyric line only. No title, no brackets, no explanation."
+    prompt: "You are the room around Collapse (803): analog dusk, tape saturation, a clock that already gave out. Speak short. Stay with the track JSON. When asked for the next line, output ONE new lyric line only. Never repeat a line already on the tape. Continue after the last line. No title, no brackets, no explanation."
   },
   engineer: {
     name: "tape engineer",
@@ -11,7 +11,7 @@ const DEFAULT_PERSONAS = {
   },
   writer: {
     name: "lyric writer",
-    prompt: "You write the next line in the same voice as the lyrics on this tape. When asked for a line, output ONE line only. No preface."
+    prompt: "You write the next line in the same voice as the lyrics on this tape. Output ONE new line only. Never repeat a line already written. No preface."
   },
   librarian: {
     name: "crate librarian",
@@ -120,7 +120,8 @@ function stubTrack() {
 }
 function trackContext(track, overlay) {
   if (!track) return "no track";
-  const lyrics = (overlay && overlay[track.id]) || track.lyrics || "";
+  const box = document.getElementById("lyric-edit");
+  const lyrics = (box && box.value) || (overlay && overlay[track.id]) || track.lyrics || "";
   return ["title: " + track.title, "genre: " + (track.genre || ""), "hook: " + (track.hook || ""), "note: " + (track.note || ""), "chords: " + (track.chords || ""), "production: " + (track.production || ""), "lyrics:\n" + lyrics].join("\n");
 }
 
@@ -253,6 +254,12 @@ function bootAI() {
     input.value = "";
     const now = stubTrack();
     const persona = cfg.personas[cfg.persona] || DEFAULT_PERSONAS.room;
+    const sheet = (document.getElementById("lyric-edit") || {}).value || "";
+    const last = lastLyricLine(sheet);
+    let userQ = q;
+    if (/next line|write the next|another line|continue/i.test(q) && last) {
+      userQ = q + "\nDo not repeat any line already on the tape. The last line on the tape is: \"" + last + "\". Write only the line that follows it.";
+    }
     try {
       let answer;
       if (cfg.provider === "device" || !cfg.baseUrl) {
@@ -260,7 +267,7 @@ function bootAI() {
       } else {
         answer = await completeRemote(cfg, [
           { role: "system", content: persona.prompt + "\n\nTAPE\n" + trackContext(now.track, now.overlay) },
-          { role: "user", content: q }
+          { role: "user", content: userQ }
         ]);
       }
       lastReply = String(answer);
