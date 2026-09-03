@@ -60,7 +60,6 @@ async function boot() {
   const genresEl = document.getElementById("genres");
   const logEl = document.getElementById("log");
   const whoEl = document.getElementById("who");
-  const brainLog = document.getElementById("brain-log");
   const chips = document.getElementById("chips");
   whoEl.value = localStorage.getItem(KEY_WHO) || "";
 
@@ -82,13 +81,12 @@ async function boot() {
   }
   function visible() { return tracks.filter((t) => matches(t, q.value.trim(), genre)); }
 
-  function askBrain(text) {
-    const track = tracks[index];
-    const line = (text || "").trim();
-    if (!track || !line || !window.Brain || !brainLog) return;
-    const answer = Brain.ask(track, overlay, line);
-    brainLog.innerHTML += "<p><strong>you</strong> " + line + "</p><p class=\"empty\">" + answer.replace(/\n/g, "<br>") + "</p>";
-    brainLog.scrollTop = brainLog.scrollHeight;
+  function fireAsk(text) {
+    const input = document.getElementById("ai-line");
+    const form = document.getElementById("ai-ask");
+    if (!input || !form) return;
+    input.value = text;
+    form.requestSubmit();
   }
 
   if (chips && window.Brain) {
@@ -98,17 +96,8 @@ async function boot() {
       btn.type = "button";
       btn.className = "chip";
       btn.textContent = c.label;
-      btn.addEventListener("click", () => askBrain(c.label));
+      btn.addEventListener("click", () => fireAsk(c.label));
       chips.appendChild(btn);
-    });
-  }
-  const askForm = document.getElementById("ask");
-  if (askForm) {
-    askForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const input = document.getElementById("ask-line");
-      askBrain(input.value);
-      input.value = "";
     });
   }
 
@@ -157,6 +146,7 @@ async function boot() {
     if (!tracks.length) return;
     index = (i + tracks.length) % tracks.length;
     const track = tracks[index];
+    window.__stationNow = { track: track, overlay: overlay };
     iframe.src = widgetUrl(track.trackId, autoplay);
     document.getElementById("now-title").textContent = track.title;
     document.getElementById("now-hook").textContent = track.hook || "";
@@ -254,6 +244,7 @@ async function boot() {
     track.lyrics = text;
     saveJSON(KEY_LYRICS, overlay);
     if (local) saveJSON(KEY_CAT, catalog);
+    window.__stationNow = { track: track, overlay: overlay };
     renderLyrics();
     renderList();
   });
