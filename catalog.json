@@ -14,7 +14,8 @@
       "soundcloud": "https://soundcloud.com/pai-dj/one-step-from-collapse-803",
       "trackId": "2393461635",
       "artwork": "https://i1.sndcdn.com/artworks-gnXUGrnVScz6UGNK-RgPrLg-t500x500.jpg",
-      "note": "The room after the clock gives out."
+      "note": "The room after the clock gives out.",
+      "hook": "We’re one step from collapse — the stereo can’t decide which side."
     },
     {
       "id": "static-ext",
@@ -25,7 +26,8 @@
       "soundcloud": "https://soundcloud.com/pai-dj/static-between-stations-1",
       "trackId": "2384395311",
       "artwork": "https://i1.sndcdn.com/artworks-Wmb2OSN50U02DRWo-zeEAiw-t500x500.jpg",
-      "note": "The tuner left in the drift."
+      "note": "The tuner left in the drift.",
+      "hook": "Seven minutes fifty-nine of signal that refuses to pick a city."
     }
   ]
 }

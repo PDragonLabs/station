@@ -11,20 +11,39 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <div class="atmos" id="atmos"></div>
+  <div class="grain"></div>
   <div class="wrap">
     <header>
       <div class="brand">PDRAGONLABS · 803</div>
       <h1>Station</h1>
       <p class="tag" id="tagline">SoundCloud is the deck. This is the room.</p>
     </header>
-    <section class="deck">
-      <iframe id="deck" allow="autoplay" title="SoundCloud deck" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2393461635&color=8b3a4a&auto_play=false"></iframe>
-      <div class="now">
-        <span>NOW · <strong id="now-title">loading</strong></span>
-        <span>backend: SoundCloud widget</span>
+
+    <section class="stage">
+      <div class="poster">
+        <img id="poster-art" alt="Now playing artwork" />
+        <div class="shade">
+          <h2 id="poster-title">—</h2>
+          <p class="hook" id="poster-hook"></p>
+        </div>
+      </div>
+      <div class="deck">
+        <iframe id="deck" allow="autoplay" title="SoundCloud deck" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2393461635&color=c23b2a&auto_play=false"></iframe>
+        <div class="now">
+          <div class="now-kicker">Now on the deck</div>
+          <h3 id="now-title">loading</h3>
+          <p class="hook" id="now-hook"></p>
+          <div class="actions">
+            <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">open on soundcloud</a>
+            <button class="btn" id="share" type="button">share station</button>
+          </div>
+        </div>
       </div>
     </section>
+
     <section class="grid" id="grid" aria-label="A-sides"></section>
+
     <footer>
       Audio stays on SoundCloud. This page only points the tuner.
       <div class="links">
