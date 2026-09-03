@@ -54,10 +54,26 @@
               <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">soundcloud</a>
               <button class="btn" id="share" type="button">share</button>
             </div>
-            <p class="hint">arrows walk the crate · / search · chat stays on this machine</p>
+            <p class="hint">share sends the song link, not the verses</p>
           </div>
         </div>
       </section>
+
+      <section class="sheet" aria-label="Lyrics">
+        <div class="booth-head">
+          <div>
+            <div class="rail-label">lyrics · local json</div>
+            <p class="booth-track" id="lyric-title">—</p>
+          </div>
+          <span class="rail-note" id="lyric-state">no verses yet</span>
+        </div>
+        <pre id="lyric-view" class="lyric-view"></pre>
+        <textarea id="lyric-edit" class="lyric-edit" rows="8" placeholder="paste verses here. they stay in this browser until you export json."></textarea>
+        <div class="actions">
+          <button class="btn" id="save-lyrics" type="button">save verses</button>
+        </div>
+      </section>
+
       <section class="booth" aria-label="Song chat">
         <div class="booth-head">
           <div>
@@ -81,7 +97,7 @@
       </div>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        House crate is the latest hundred from pai-dj. Promo lives in catalog.featured.
+        Verses live in the JSON you import/export. The public Pages crate does not have to carry them.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
