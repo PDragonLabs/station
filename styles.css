@@ -88,9 +88,18 @@ h1 { font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500; font-size:
   text-transform: uppercase; text-decoration: none; cursor: pointer;
 }
 .btn:hover { background: var(--paper); color: #1a0e16; }
-.booth { border: 1px solid var(--line); background: rgba(8,4,8,0.55); margin-bottom: 22px; padding: 14px; }
+.booth, .sheet { border: 1px solid var(--line); background: rgba(8,4,8,0.55); margin-bottom: 22px; padding: 14px; }
 .booth-head { display: flex; justify-content: space-between; gap: 12px; align-items: end; margin-bottom: 10px; }
 .booth-track { margin: 4px 0 0; font-family: "IBM Plex Serif", Georgia, serif; }
+.lyric-view {
+  white-space: pre-wrap; font-family: "IBM Plex Serif", Georgia, serif;
+  font-size: 16px; line-height: 1.55; margin: 0 0 12px; min-height: 3em; color: var(--ink);
+}
+.lyric-edit {
+  width: 100%; background: rgba(0,0,0,0.45); border: 1px solid var(--line);
+  color: var(--ink); padding: 10px; font: inherit; line-height: 1.5; resize: vertical;
+}
+.lyric-edit:focus { outline: none; border-color: var(--paper); }
 .who, .say input {
   background: rgba(0,0,0,0.45); border: 1px solid var(--line);
   color: var(--ink); padding: 8px 10px; font: inherit;
