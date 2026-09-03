@@ -31,21 +31,31 @@
       <div class="deck">
         <iframe id="deck" allow="autoplay" title="SoundCloud deck" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/2393461635&color=c23b2a&auto_play=false"></iframe>
         <div class="now">
-          <div class="now-kicker">Now on the deck</div>
+          <div class="now-kicker"><span id="pos">1 / 1</span> · now on the deck</div>
           <h3 id="now-title">loading</h3>
           <p class="hook" id="now-hook"></p>
           <div class="actions">
-            <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">open on soundcloud</a>
-            <button class="btn" id="share" type="button">share station</button>
+            <button class="btn" id="prev" type="button">prev</button>
+            <button class="btn" id="next" type="button">next</button>
+            <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">soundcloud</a>
+            <button class="btn" id="share" type="button">share</button>
           </div>
+          <p class="hint">arrows to walk the crate · / to search</p>
         </div>
       </div>
     </section>
 
+    <div class="crate-bar">
+      <label class="search">
+        <span>tune</span>
+        <input id="q" type="search" placeholder="search the crate…" autocomplete="off" />
+      </label>
+      <div id="count" class="count"></div>
+    </div>
     <section class="grid" id="grid" aria-label="A-sides"></section>
 
     <footer>
-      Audio stays on SoundCloud. This page only points the tuner.
+      Add a song by dropping one object in catalog.json and pushing.
       <div class="links">
         <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
         <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
