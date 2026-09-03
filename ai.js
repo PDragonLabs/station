@@ -52,27 +52,44 @@ function saveAI(cfg) { localStorage.setItem(KEY_AI, JSON.stringify(cfg)); }
 function chatUrl(cfg) {
   return (cfg.baseUrl || "").replace(/\/$/, "") + "/chat/completions";
 }
+function headers(cfg) {
+  return Object.assign({ "Content-Type": "application/json" }, cfg.apiKey ? { Authorization: "Bearer " + cfg.apiKey } : {});
+}
+function pickText(data) {
+  const msg = data && data.choices && data.choices[0] && data.choices[0].message;
+  if (!msg) return "";
+  return (msg.content || msg.reasoning_content || "").trim();
+}
 async function pingEndpoint(cfg) {
   if (cfg.provider === "device" || !cfg.baseUrl) return { ok: true, detail: "on-device brain — no network" };
   const res = await fetch(chatUrl(cfg), {
     method: "POST",
-    headers: Object.assign({ "Content-Type": "application/json" }, cfg.apiKey ? { Authorization: "Bearer " + cfg.apiKey } : {}),
-    body: JSON.stringify({ model: cfg.model || "", messages: [{ role: "user", content: "ping" }], max_tokens: 8 })
+    headers: headers(cfg),
+    body: JSON.stringify({
+      model: cfg.model || "",
+      messages: [{ role: "user", content: "Reply with the single word pong." }],
+      max_tokens: 64
+    })
   });
   const text = await res.text();
   if (!res.ok) throw new Error(res.status + " " + text.slice(0, 180));
-  return { ok: true, detail: text.slice(0, 160) };
+  return { ok: true, detail: text.slice(0, 180) };
 }
 async function completeRemote(cfg, messages) {
   const res = await fetch(chatUrl(cfg), {
     method: "POST",
-    headers: Object.assign({ "Content-Type": "application/json" }, cfg.apiKey ? { Authorization: "Bearer " + cfg.apiKey } : {}),
-    body: JSON.stringify({ model: cfg.model || "", messages: messages, temperature: 0.8 })
+    headers: headers(cfg),
+    body: JSON.stringify({
+      model: cfg.model || "",
+      messages: messages,
+      temperature: 0.8,
+      max_tokens: 512
+    })
   });
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error((data.error && data.error.message) || ("http " + res.status));
-  const content = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-  if (!content) throw new Error("empty model reply");
+  const content = pickText(data);
+  if (!content) throw new Error("empty model reply — raise max tokens or pick a chat model");
   return content;
 }
 function stubTrack() {
@@ -160,7 +177,7 @@ function bootAI() {
       const r = await pingEndpoint(cfg);
       setStatus("ok · " + r.detail);
     } catch (err) {
-      setStatus("fail · " + err.message + " (CORS or mixed-content if this is Pages + local Jan)");
+      setStatus("fail · " + err.message);
     }
   });
 
