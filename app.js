@@ -2,6 +2,7 @@ const PLAYER = "https://w.soundcloud.com/player/";
 const KEY_CAT = "pdl.station.catalog";
 const KEY_CHAT = "pdl.station.chat";
 const KEY_WHO = "pdl.station.who";
+const KEY_LYRICS = "pdl.station.lyrics";
 
 function widgetUrl(trackId, autoplay) {
   const params = new URLSearchParams({
@@ -37,13 +38,17 @@ function normalizeCatalog(raw) {
 function matches(track, q, genre) {
   if (genre && track.genre !== genre) return false;
   if (!q) return true;
-  const hay = [track.title, track.subtitle, track.note, track.hook, track.id, track.genre].join(" ").toLowerCase();
+  const hay = [track.title, track.subtitle, track.note, track.hook, track.id, track.genre, track.lyrics].join(" ").toLowerCase();
   return hay.includes(q.toLowerCase());
 }
 function pickCatalog(house) {
   const stored = loadJSON(KEY_CAT, null);
   if (stored && Array.isArray(stored.tracks) && stored.tracks.length >= (house.tracks || []).length) return { catalog: stored, local: true };
   return { catalog: house, local: false };
+}
+function versesFor(track, overlay) {
+  if (!track) return "";
+  return (overlay[track.id] || track.lyrics || "").trim();
 }
 
 async function boot() {
@@ -61,6 +66,7 @@ async function boot() {
   let catalog = picked.catalog;
   let local = picked.local;
   let chats = loadJSON(KEY_CHAT, {});
+  let overlay = loadJSON(KEY_LYRICS, {});
   let tracks = catalog.tracks;
   let genre = "";
   let index = 0;
@@ -74,6 +80,18 @@ async function boot() {
   }
 
   function visible() { return tracks.filter((t) => matches(t, q.value.trim(), genre)); }
+
+  function renderLyrics() {
+    const track = tracks[index];
+    if (!track) return;
+    const text = versesFor(track, overlay);
+    document.getElementById("lyric-title").textContent = track.title;
+    document.getElementById("lyric-view").textContent = text || "no verses on this tape yet";
+    document.getElementById("lyric-edit").value = text;
+    document.getElementById("lyric-state").textContent = overlay[track.id]
+      ? "private · this browser"
+      : (track.lyrics ? "from json" : "empty");
+  }
 
   function renderChat() {
     const track = tracks[index];
@@ -121,13 +139,11 @@ async function boot() {
     document.getElementById("open-sc").href = track.soundcloud || "#";
     document.getElementById("pos").textContent = (index + 1) + " / " + tracks.length;
     history.replaceState(null, "", "#" + track.id);
-    document.querySelectorAll(".card, .promo-card").forEach((el) => {
-      el.classList.toggle("active", el.querySelector("h2") && el.querySelector("h2").textContent === track.title);
-    });
     document.querySelectorAll(".card").forEach((el) => {
       el.classList.toggle("active", el.dataset.id === track.id);
     });
     renderChat();
+    renderLyrics();
   }
 
   function renderGenres() {
@@ -160,12 +176,13 @@ async function boot() {
       btn.className = "card";
       btn.dataset.id = track.id;
       const dur = track.duration ? " · " + track.duration : "";
+      const hasL = versesFor(track, overlay) ? " · verses" : "";
       btn.innerHTML =
         '<img src="' + (track.artwork || "") + '" alt="">' +
         '<div class="copy"><h2>' + track.title + "</h2>" +
         '<p class="sub">' + (track.genre || track.subtitle || "") + "</p>" +
         '<p class="note">' + (track.note || "") + "</p>" +
-        '<div class="meta">' + (track.artist || "") + dur + "</div></div>";
+        '<div class="meta">' + (track.artist || "") + dur + hasL + "</div></div>";
       btn.addEventListener("click", () => paint(i, true));
       grid.appendChild(btn);
     });
@@ -198,6 +215,20 @@ async function boot() {
   document.getElementById("next").addEventListener("click", () => step(1));
   q.addEventListener("input", renderList);
   whoEl.addEventListener("change", () => localStorage.setItem(KEY_WHO, whoEl.value.trim()));
+
+  document.getElementById("save-lyrics").addEventListener("click", () => {
+    const track = tracks[index];
+    if (!track) return;
+    const text = document.getElementById("lyric-edit").value.replace(/\s+$/,"");
+    if (text) overlay[track.id] = text;
+    else delete overlay[track.id];
+    track.lyrics = text;
+    saveJSON(KEY_LYRICS, overlay);
+    if (local) saveJSON(KEY_CAT, catalog);
+    renderLyrics();
+    renderList();
+  });
+
   document.getElementById("say").addEventListener("submit", (e) => {
     e.preventDefault();
     const track = tracks[index];
@@ -210,11 +241,19 @@ async function boot() {
     document.getElementById("line").value = "";
     renderChat();
   });
+
   document.getElementById("export-cat").addEventListener("click", () => {
+    const packed = JSON.parse(JSON.stringify(catalog));
+    packed.tracks = packed.tracks.map((t) => {
+      const copy = Object.assign({}, t);
+      const v = versesFor(t, overlay);
+      if (v) copy.lyrics = v;
+      return copy;
+    });
     download("pdragonlabs-station.json", {
-      station: catalog.station || "PDRAGONLABS Station",
+      station: packed.station || "PDRAGONLABS Station",
       exportedAt: new Date().toISOString(),
-      catalog: catalog,
+      catalog: packed,
       chats: chats
     });
   });
@@ -227,8 +266,12 @@ async function boot() {
       const raw = JSON.parse(await file.text());
       catalog = normalizeCatalog(raw);
       if (raw.chats && typeof raw.chats === "object") chats = raw.chats;
+      catalog.tracks.forEach((t) => {
+        if (t.lyrics) overlay[t.id] = t.lyrics;
+      });
       saveJSON(KEY_CAT, catalog);
       saveJSON(KEY_CHAT, chats);
+      saveJSON(KEY_LYRICS, overlay);
       local = true;
       refresh();
     } catch (err) {
@@ -254,7 +297,7 @@ async function boot() {
     } catch (_) {}
   });
   window.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "INPUT") {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
       if (e.key === "Escape") { e.target.blur(); if (e.target === q) { q.value = ""; renderList(); } }
       return;
     }
