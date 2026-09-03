@@ -17,7 +17,15 @@
     <aside class="rail" aria-label="Genres">
       <div class="rail-label">genres</div>
       <nav class="genres" id="genres"></nav>
-      <p class="rail-note">Tagged on SoundCloud. Add a track with a <code>genre</code> and it grows this list.</p>
+      <p class="rail-note">Tagged on SoundCloud. Add a <code>genre</code> and this list grows.</p>
+      <div class="rail-label" style="margin-top:22px">local booth</div>
+      <p class="rail-note" id="booth-state">house catalog</p>
+      <div class="booth-actions">
+        <button class="btn" id="export-cat" type="button">export json</button>
+        <button class="btn" id="import-btn" type="button">import json</button>
+        <button class="btn" id="reset-cat" type="button">reset house</button>
+        <input id="import-file" type="file" accept="application/json,.json" hidden />
+      </div>
     </aside>
     <div class="wrap">
       <header>
@@ -45,10 +53,26 @@
               <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">soundcloud</a>
               <button class="btn" id="share" type="button">share</button>
             </div>
-            <p class="hint">arrows walk the crate · / search</p>
+            <p class="hint">arrows walk the crate · / search · chat stays on this machine</p>
           </div>
         </div>
       </section>
+
+      <section class="booth" aria-label="Song chat">
+        <div class="booth-head">
+          <div>
+            <div class="rail-label">song chat · local</div>
+            <p class="booth-track" id="chat-track">—</p>
+          </div>
+          <input id="who" class="who" maxlength="24" placeholder="your name" />
+        </div>
+        <div class="log" id="log"></div>
+        <form class="say" id="say">
+          <input id="line" maxlength="280" placeholder="leave a line on this track…" autocomplete="off" />
+          <button class="btn" type="submit">send</button>
+        </form>
+      </section>
+
       <div class="crate-bar">
         <label class="search">
           <span>tune</span>
@@ -58,7 +82,7 @@
       </div>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        New song = one object in catalog.json with title, trackId, artwork, genre.
+        Chat and imported crates live in this browser only. Export JSON to take them with you.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
