@@ -146,6 +146,7 @@ function bootAI() {
   const pop = document.getElementById("ai-pop");
   if (!pop) return;
   let cfg = loadAI();
+  let lastReply = "";
   fillForm(cfg);
   setStatus(cfg.provider === "device" ? "on-device" : cfg.provider + " · " + (cfg.model || "no model"));
 
@@ -208,6 +209,22 @@ function bootAI() {
     }
   });
 
+  const drop = document.getElementById("drop-line");
+  if (drop) {
+    drop.addEventListener("click", () => {
+      const box = document.getElementById("lyric-edit");
+      const line = (lastReply || "").trim();
+      if (!box || !line) {
+        setStatus("no reply to drop yet");
+        return;
+      }
+      box.value = (box.value.replace(/\s+$/, "") + "\n" + line).replace(/^\n/, "");
+      const save = document.getElementById("save-lyrics");
+      if (save) save.click();
+      setStatus("dropped onto verses");
+    });
+  }
+
   document.getElementById("ai-ask").addEventListener("submit", async (e) => {
     e.preventDefault();
     const input = document.getElementById("ai-line");
@@ -229,7 +246,8 @@ function bootAI() {
           { role: "user", content: q }
         ]);
       }
-      log.innerHTML += "<p class=\"empty\">" + String(answer).replace(/\n/g, "<br>") + "</p>";
+      lastReply = String(answer);
+      log.innerHTML += "<p class=\"empty\">" + lastReply.replace(/\n/g, "<br>") + "</p>";
     } catch (err) {
       log.innerHTML += "<p class=\"empty\">" + err.message + "</p>";
     }
