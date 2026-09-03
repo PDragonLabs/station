@@ -24,6 +24,7 @@
         <button class="btn" id="export-cat" type="button">export json</button>
         <button class="btn" id="import-btn" type="button">import json</button>
         <button class="btn" id="reset-cat" type="button">reset house</button>
+        <button class="btn" id="ai-open" type="button">ai popout</button>
         <input id="import-file" type="file" accept="application/json,.json" hidden />
       </div>
     </aside>
@@ -54,6 +55,7 @@
               <button class="btn" id="next" type="button">next</button>
               <a class="btn" id="open-sc" href="https://soundcloud.com/pai-dj" target="_blank" rel="noreferrer">soundcloud</a>
               <button class="btn" id="share" type="button">share</button>
+              <button class="btn" id="ai-open-2" type="button">ai</button>
             </div>
           </div>
         </div>
@@ -63,7 +65,7 @@
         <div class="booth-head">
           <div>
             <div class="rail-label">station brain · on-device</div>
-            <p class="booth-track">talks from the JSON on this tape. nothing leaves the room.</p>
+            <p class="booth-track">talks from the JSON on this tape. popout holds keys and personas.</p>
           </div>
           <span class="rail-note" id="brain-state">on-device</span>
         </div>
@@ -113,7 +115,7 @@
       </div>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        803 is the deep cut. The brain only knows lyrics, chords, and notes you keep in JSON.
+        API keys live only in this browser. The public Pages crate never carries them.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
@@ -122,7 +124,56 @@
       </footer>
     </div>
   </div>
+
+  <div class="pop" id="ai-pop" hidden>
+    <div class="pop-card">
+      <div class="booth-head">
+        <div>
+          <div class="rail-label">ai popout · local config</div>
+          <p class="booth-track">Jan · xAI · custom endpoint. Keys never go to GitHub.</p>
+        </div>
+        <button class="btn" id="ai-close" type="button">close</button>
+      </div>
+      <form id="ai-form" class="ai-form">
+        <label>provider
+          <select id="ai-provider">
+            <option value="device">on-device</option>
+            <option value="jan">Jan (local)</option>
+            <option value="xai">xAI</option>
+            <option value="custom">custom OpenAI-compatible</option>
+          </select>
+        </label>
+        <label>base url
+          <input id="ai-url" placeholder="https://api.x.ai/v1" autocomplete="off" />
+        </label>
+        <label>api key
+          <input id="ai-key" type="password" placeholder="stays in this browser" autocomplete="off" />
+        </label>
+        <label>model
+          <input id="ai-model" placeholder="grok-3 or jan model id" autocomplete="off" />
+        </label>
+        <label>persona
+          <select id="ai-persona"></select>
+        </label>
+        <p class="rail-note" id="ai-status">not saved yet</p>
+        <div class="actions">
+          <button class="btn" id="ai-save" type="button">save</button>
+          <button class="btn" id="ai-test" type="button">test endpoint</button>
+          <button class="btn" id="ai-export" type="button">export config</button>
+          <button class="btn" id="ai-import" type="button">import config</button>
+          <input id="ai-import-file" type="file" accept="application/json,.json" hidden />
+        </div>
+      </form>
+      <div class="log" id="ai-log"></div>
+      <form class="say" id="ai-ask">
+        <input id="ai-line" maxlength="400" placeholder="ask this model about the current tape…" autocomplete="off" />
+        <button class="btn" type="submit">ask</button>
+      </form>
+    </div>
+  </div>
+
   <script src="./brain.js"></script>
+  <script src="./ai.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
