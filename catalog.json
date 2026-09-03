@@ -5,7 +5,22 @@
   "satellite": "https://soundcloud.com/j-kast-603838038",
   "featured": ["803", "static-ext"],
   "tracks": [
-    {"id": "803", "title": "Collapse (803)", "subtitle": "One Step From Collapse", "artist": "PDRAGONLABS", "duration": "4:23", "genre": "Psy Rock", "soundcloud": "https://soundcloud.com/pai-dj/one-step-from-collapse-803", "trackId": "2393461635", "artwork": "https://i1.sndcdn.com/artworks-gnXUGrnVScz6UGNK-RgPrLg-t500x500.jpg", "note": "The room after the clock gives out.", "hook": "We're one step from collapse — the stereo can't decide which side."},
+    {
+      "id": "803",
+      "title": "Collapse (803)",
+      "subtitle": "One Step From Collapse",
+      "artist": "PDRAGONLABS",
+      "duration": "4:23",
+      "genre": "Psy Rock",
+      "soundcloud": "https://soundcloud.com/pai-dj/one-step-from-collapse-803",
+      "trackId": "2393461635",
+      "artwork": "https://i1.sndcdn.com/artworks-gnXUGrnVScz6UGNK-RgPrLg-t500x500.jpg",
+      "note": "The room after the clock gives out.",
+      "hook": "We're one step from collapse — the stereo can't decide which side.",
+      "chords": "Em G D A  (verse)\nC G D Em  (chorus)\nLet the G ring. Don't quantize the slide.",
+      "production": "Fragile psychedelic rock. Tape-warbled slide guitar, droning fuzz bass, loose live drums pushed slightly behind the beat. Analog organ pads, spring reverb, worn-out tape saturation. Abrupt dynamic drops, feedback squeals, unstable stereo imaging.",
+      "lyrics": "[verse]\nclock on the wall stuck between ticks\nfan cutting circles out of the dusk\ntape deck glowing like it knows too much\none step from collapse, don't ask it to hush\n\n[chorus]\nwe're one step from collapse\nthe stereo can't decide which side\nspring in the tank, slide going wide\nleave the room on, let the signal ride\n\n[verse]\nradio talking to nobody home\norgan pad hanging off a frayed bone\ndrums late on purpose, bass like a drone\nif it holds together that's a loan"
+    },
     {"id": "static-ext", "title": "Static Between Stations extended", "subtitle": "the drive between frequencies", "artist": "PDRAGONLABS", "duration": "7:59", "genre": "Sonic Trap", "soundcloud": "https://soundcloud.com/pai-dj/static-between-stations-1", "trackId": "2384395311", "artwork": "https://i1.sndcdn.com/artworks-Wmb2OSN50U02DRWo-zeEAiw-t500x500.jpg", "note": "The tuner left in the drift.", "hook": "Seven minutes fifty-nine of signal that refuses to pick a city."},
     {"id": "static", "title": "Static Between Stations", "subtitle": "the short lock", "artist": "PDRAGONLABS", "duration": "2:36", "genre": "Sonic Trap", "soundcloud": "https://soundcloud.com/pai-dj/static-between-stations", "trackId": "2384388726", "artwork": "https://i1.sndcdn.com/artworks-BnVQv5hzW6AJzuE9-EzaJjg-t500x500.jpg", "note": "Same weather. Less road.", "hook": "The station before it stretched."},
     {"id": "static-bloom", "title": "Static Bloom", "subtitle": "TrXz by P", "artist": "PDRAGONLABS", "duration": "3:59", "genre": "Cyber Trap", "soundcloud": "https://soundcloud.com/pai-dj/static-bloom-1", "trackId": "2382462675", "artwork": "https://i1.sndcdn.com/artworks-c3PwTUNBlbFHIvXT-vlm25w-t500x500.jpg", "note": "Noise that learned to flower.", "hook": "Static, then something opens."},
