@@ -11,6 +11,9 @@
   min-height: 320px;
 }
 .talk .log { max-height: 280px; min-height: 160px; }
+@media (min-width: 980px) {
+  .promo { grid-template-columns: 1fr 1fr 1fr; }
+}
 .pop {
   position: fixed; inset: 0 0 0 auto; z-index: 20;
   width: min(420px, 100%);
