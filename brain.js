@@ -40,16 +40,14 @@ const Brain = {
       return "No chord sheet in this JSON yet. Paste one under chords and save.";
     }
 
-    if (/verse|lyric|read|words|chorus/.test(q)) {
+    if (/verse|lyric|read|words|chorus/.test(q) && !/next line|write/.test(q)) {
       if (verses.length) return verses[0];
       return "No verses on this tape. Paste them in the lyrics sheet — they stay in this browser until you export.";
     }
 
     if (/next line|write|another|continue/.test(q)) {
-      if (deep) {
-        return "the clock still owes us a minute\nleave the fan on, don't pick a winner\nif the stereo splits, let both rooms dinner";
-      }
-      if (hook) return "take the hook and lean: \u201c" + hook + "\u201d\nsay it quieter the second time.";
+      if (deep) return "and the speakers start to moan";
+      if (hook) return hook;
       return "Give me a hook in the JSON and I'll lean a line off it.";
     }
 
