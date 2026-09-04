@@ -8,9 +8,10 @@ const ALIAS = {
   "803": "one-step-from-collapse-803",
   "one-step-from-collapse-803": "803",
   "static-ext": "static-between-stations-1",
-  "static-between-stations-1": "static-ext"
+  "static-between-stations-1": "static-ext",
+  "quiet-air": "the-quiet-air",
+  "the-quiet-air": "quiet-air"
 };
-const SHARE_PAGES = ["803","static-ext","static","static-bloom","still-in-it","liminal-cascade","resonance-chamber","amethyst-vortex","quiet-air","down-this-road","w4it"];
 
 function widgetUrl(trackId, autoplay) {
   const params = new URLSearchParams({
@@ -65,8 +66,7 @@ function findTrack(list, id) {
     || list.find((t) => t.title && t.title.toLowerCase() === String(id).toLowerCase());
 }
 function trackLink(track) {
-  if (SHARE_PAGES.indexOf(track.id) !== -1) return STATION + "t/" + track.id + ".html";
-  return STATION + "#" + track.id;
+  return STATION + "t/" + track.id + ".html";
 }
 function tweetFor(track) {
   const hook = track.hook || track.note || "";
