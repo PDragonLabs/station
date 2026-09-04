@@ -3,6 +3,7 @@ const KEY_CAT = "pdl.station.catalog";
 const KEY_CHAT = "pdl.station.chat";
 const KEY_WHO = "pdl.station.who";
 const KEY_LYRICS = "pdl.station.lyrics";
+const STATION = "https://pdragonlabs.github.io/station/";
 const ALIAS = {
   "803": "one-step-from-collapse-803",
   "one-step-from-collapse-803": "803",
@@ -61,6 +62,13 @@ function findTrack(list, id) {
     || list.find((t) => t.id === ALIAS[id])
     || list.find((t) => (t.soundcloud || "").indexOf("/" + id) !== -1)
     || list.find((t) => t.title && t.title.toLowerCase() === String(id).toLowerCase());
+}
+function trackLink(track) {
+  return STATION + "#" + track.id;
+}
+function tweetFor(track) {
+  const hook = track.hook || track.note || "";
+  return track.title + " \u2014 PDRAGONLABS" + (hook ? "\n" + hook : "");
 }
 
 async function boot() {
@@ -320,16 +328,24 @@ async function boot() {
   });
   document.getElementById("share").addEventListener("click", async () => {
     const track = tracks[index];
-    const url = location.origin + location.pathname + "#" + track.id;
+    const url = trackLink(track);
     try {
-      if (navigator.share) await navigator.share({ title: track.title + " — PDRAGONLABS", url });
-      else {
-        await navigator.clipboard.writeText(url);
-        document.getElementById("share").textContent = "copied";
-        setTimeout(() => { document.getElementById("share").textContent = "share"; }, 1400);
-      }
+      await navigator.clipboard.writeText(url);
+      document.getElementById("share").textContent = "copied";
+      setTimeout(() => { document.getElementById("share").textContent = "copy link"; }, 1400);
     } catch (_) {}
   });
+  const xBtn = document.getElementById("share-x");
+  if (xBtn) {
+    xBtn.addEventListener("click", () => {
+      const track = tracks[index];
+      if (!track) return;
+      const intent = "https://twitter.com/intent/tweet?text=" +
+        encodeURIComponent(tweetFor(track)) +
+        "&url=" + encodeURIComponent(trackLink(track));
+      window.open(intent, "_blank", "noopener");
+    });
+  }
   window.addEventListener("keydown", (e) => {
     if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
       if (e.key === "Escape") { e.target.blur(); if (e.target === q) { q.value = ""; renderList(); } }
