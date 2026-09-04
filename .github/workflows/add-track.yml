@@ -1,0 +1,176 @@
+name: Add track
+
+on:
+  workflow_dispatch:
+    inputs:
+      soundcloud:
+        description: SoundCloud URL (https://soundcloud.com/pai-dj/...)
+        required: true
+      trackId:
+        description: Numeric SoundCloud track id (from the embed / share widget)
+        required: true
+      title:
+        description: Title (leave blank to use the URL slug)
+        required: false
+      artwork:
+        description: Cover image URL (i1.sndcdn.com artwork)
+        required: false
+      genre:
+        description: Genre tag
+        required: false
+        default: untagged
+      hook:
+        description: One-line hook for the card
+        required: false
+      duration:
+        description: Length like 4:23
+        required: false
+      featured:
+        description: Pin as an attractor on the station
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: add-track
+  cancel-in-progress: false
+
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Append catalog and cut the card
+        env:
+          SC: ${{ inputs.soundcloud }}
+          TID: ${{ inputs.trackId }}
+          TITLE: ${{ inputs.title }}
+          ART: ${{ inputs.artwork }}
+          GENRE: ${{ inputs.genre }}
+          HOOK: ${{ inputs.hook }}
+          DUR: ${{ inputs.duration }}
+          FEAT: ${{ inputs.featured }}
+        run: |
+          python3 << 'PY'
+          import json, os, re, html
+          from pathlib import Path
+
+          sc = (os.environ.get("SC") or "").strip()
+          track_id = re.sub(r"\D", "", os.environ.get("TID") or "")
+          if "soundcloud.com" not in sc or not track_id:
+              raise SystemExit("need a SoundCloud URL and numeric track id")
+
+          slug = sc.rstrip("/").split("/")[-1]
+          slug = re.sub(r"[^a-z0-9-]+", "-", slug.lower()).strip("-") or "tape"
+          title = (os.environ.get("TITLE") or "").strip() or slug.replace("-", " ").title()
+          art = (os.environ.get("ART") or "").strip()
+          genre = (os.environ.get("GENRE") or "untagged").strip() or "untagged"
+          hook = (os.environ.get("HOOK") or "").strip()
+          dur = (os.environ.get("DUR") or "").strip()
+          feat = (os.environ.get("FEAT") or "").lower() in ("true", "1", "yes")
+
+          cat_path = Path("catalog.json")
+          cat = json.loads(cat_path.read_text())
+          tracks = cat.setdefault("tracks", [])
+          featured = cat.setdefault("featured", [])
+
+          existing = None
+          for t in tracks:
+              if t.get("id") == slug or t.get("trackId") == track_id or t.get("soundcloud") == sc:
+                  existing = t
+                  break
+
+          if existing:
+              existing["title"] = title
+              existing["soundcloud"] = sc
+              existing["trackId"] = track_id
+              if art: existing["artwork"] = art
+              if genre: existing["genre"] = genre
+              if hook: existing["hook"] = hook
+              if dur: existing["duration"] = dur
+              tid = existing["id"]
+              art = existing.get("artwork") or art
+              hook = existing.get("hook") or hook
+          else:
+              rec = {
+                  "id": slug,
+                  "title": title,
+                  "artist": "PDRAGONLABS",
+                  "duration": dur,
+                  "genre": genre,
+                  "soundcloud": sc,
+                  "trackId": track_id,
+                  "artwork": art,
+                  "hook": hook or title,
+                  "note": "added from the Add track trigger"
+              }
+              rec = {k: v for k, v in rec.items() if v not in ("", None)}
+              tracks.insert(0, rec)
+              tid = slug
+
+          if feat and tid not in featured:
+              featured.insert(0, tid)
+              cat["featured"] = featured[:3]
+
+          cat_path.write_text(json.dumps(cat, indent=2, ensure_ascii=False) + "\n")
+
+          safe_title = html.escape(title)
+          safe_hook = html.escape(hook or title)
+          safe_art = html.escape(art or "https://pdragonlabs.github.io/station/banner-1200x630.png")
+          safe_sc = html.escape(sc)
+          Path("t").mkdir(exist_ok=True)
+          Path(f"t/{tid}.html").write_text(f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{safe_title} — PDRAGONLABS</title>
+  <meta name="description" content="{safe_hook}" />
+  <meta property="og:title" content="{safe_title} — PDRAGONLABS" />
+  <meta property="og:description" content="{safe_hook}" />
+  <meta property="og:url" content="https://pdragonlabs.github.io/station/t/{tid}.html" />
+  <meta property="og:image" content="{safe_art}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{safe_title} — PDRAGONLABS" />
+  <meta name="twitter:image" content="{safe_art}" />
+  <link rel="stylesheet" href="../styles.css" />
+  <style>
+    body {{ min-height: 100vh; display: grid; place-items: center; margin: 0; background: #140b12; color: #f3e6d4; }}
+    .card {{ width: min(420px, 92vw); background: #140b12; border: 1px solid #d4b08a; overflow: hidden; }}
+    .card img {{ width: 100%; display: block; aspect-ratio: 1; object-fit: cover; }}
+    .copy {{ padding: 16px 18px 20px; }}
+    .actions {{ display: flex; gap: 8px; flex-wrap: wrap; }}
+    .actions a {{ border: 1px solid #d4b08a; color: #f3e6d4; text-decoration: none; padding: 8px 12px; letter-spacing: .08em; text-transform: uppercase; font-size: 11px; }}
+  </style>
+</head>
+<body>
+  <article class="card">
+    <img src="{safe_art}" alt="{safe_title}" />
+    <div class="copy">
+      <div class="kicker">PDRAGONLABS · station</div>
+      <h1>{safe_title}</h1>
+      <p class="hook">{safe_hook}</p>
+      <div class="actions">
+        <a href="../#{tid}">open in station</a>
+        <a href="{safe_sc}">soundcloud</a>
+      </div>
+    </div>
+  </article>
+</body>
+</html>
+""")
+          print("stamped", tid)
+          PY
+      - name: Commit
+        run: |
+          git config user.name "PDragonLabs"
+          git config user.email "131260835+PDragonLabs@users.noreply.github.com"
+          git add catalog.json t/
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+            exit 0
+          fi
+          git commit -m "Add track from trigger"
+          git push
