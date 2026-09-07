@@ -6,6 +6,7 @@
   --lamp: #e24a32;
   --line: rgba(212, 176, 138, 0.28);
   --rail: 220px;
+  --cursor: url("sprite-1x.png") 4 4, pointer;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -15,6 +16,7 @@ body {
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
+  cursor: url("sprite-1x.png") 4 4, pointer;
 }
 .atmos {
   position: fixed; inset: 0;
@@ -45,7 +47,7 @@ body {
   .genre { white-space: nowrap; }
 }
 .genre, .chip {
-  appearance: none; text-align: left; cursor: pointer;
+  appearance: none; text-align: left; cursor: var(--cursor);
   background: transparent; color: var(--ink);
   border: 1px solid var(--line); padding: 8px 10px; font: inherit; font-size: 13px;
 }
@@ -63,7 +65,7 @@ h1 { font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500; font-size:
 @media (min-width: 700px) { .promo { grid-template-columns: 1fr 1fr; } }
 .promo-card {
   display: grid; grid-template-columns: 92px 1fr; gap: 14px; padding: 10px;
-  text-align: left; color: inherit; width: 100%; cursor: pointer;
+  text-align: left; color: inherit; width: 100%; cursor: var(--cursor);
   border: 1px solid var(--paper); background: rgba(0,0,0,0.45);
 }
 .promo-card img { width: 92px; height: 92px; object-fit: cover; }
@@ -89,7 +91,7 @@ h1 { font-family: "IBM Plex Serif", Georgia, serif; font-weight: 500; font-size:
 .btn {
   appearance: none; border: 1px solid var(--paper); background: transparent;
   color: var(--paper); padding: 8px 12px; font-size: 12px; letter-spacing: 0.08em;
-  text-transform: uppercase; text-decoration: none; cursor: pointer;
+  text-transform: uppercase; text-decoration: none; cursor: var(--cursor);
 }
 .btn:hover { background: var(--paper); color: #1a0e16; }
 .booth, .sheet, .brain { border: 1px solid var(--line); background: rgba(8,4,8,0.55); margin-bottom: 22px; padding: 14px; }
@@ -129,7 +131,7 @@ body.deep-803 .brain { border-color: var(--lamp); }
 .card {
   display: grid; grid-template-columns: 88px 1fr; gap: 12px; padding: 0;
   background: rgba(18, 8, 16, 0.72); border: 1px solid var(--line);
-  cursor: pointer; text-align: left; color: inherit; width: 100%; overflow: hidden;
+  cursor: var(--cursor); text-align: left; color: inherit; width: 100%; overflow: hidden;
 }
 .card:hover { border-color: var(--paper); }
 .card.active { border-color: var(--lamp); box-shadow: 0 0 0 1px var(--lamp); }
