@@ -67,7 +67,7 @@
       try {
         const headers = { "Content-Type": "application/json" };
         if (cfg.apiKey) headers.Authorization = "Bearer " + cfg.apiKey;
-        const res = await fetch(String(cfg.baseUrl || "").replace(/\/$/, "") + "/chat/completions", {
+        const res = await _fetch(String(cfg.baseUrl || "").replace(/\/$/, "") + "/chat/completions", {
           method: "POST",
           headers: headers,
           body: JSON.stringify({
@@ -118,13 +118,10 @@
 
   function openEditor(id) {
     const pop = document.getElementById("edit-pop");
+    if (!pop) return;
     const cat = loadCat();
-    const track = (cat && cat.tracks || []).find((t) => t.id === id) || (window.__stationNow && window.__stationNow.track);
-    if (!pop || !track || track.id !== id && !(cat && cat.tracks)) {
-      const fromNow = window.__stationNow && window.__stationNow.track;
-      if (!pop || !fromNow) return;
-    }
-    const t = (cat && cat.tracks || []).find((x) => x.id === id) || window.__stationNow.track;
+    const t = ((cat && cat.tracks) || []).find((x) => x.id === id) || (window.__stationNow && window.__stationNow.track);
+    if (!t) return;
     document.getElementById("ed-id").value = t.id;
     document.getElementById("ed-title").value = t.title || "";
     document.getElementById("ed-genre").value = t.genre || "";
@@ -140,9 +137,7 @@
   async function tagOne(id) {
     const st = document.getElementById("retag-state");
     let cat = loadCat();
-    if (!cat || !cat.tracks) {
-      cat = await fetch("./catalog.json").then((r) => r.json());
-    }
+    if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
     const track = cat.tracks.find((t) => t.id === id);
     if (!track) return;
     if (st) st.textContent = "retag " + track.title;
@@ -153,6 +148,34 @@
     saveCat(cat);
     if (st) st.textContent = "tagged \u00b7 export json to keep";
     location.reload();
+  }
+
+  async function exportHouse() {
+    let cat = loadCat();
+    if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
+    const packed = JSON.parse(JSON.stringify(cat));
+    const map = lyricsMap();
+    packed.tracks = packed.tracks.map((t) => {
+      const copy = Object.assign({}, t);
+      if (map[t.id]) copy.lyrics = map[t.id];
+      return copy;
+    });
+    packed.exportedAt = new Date().toISOString();
+    try { packed.chats = JSON.parse(localStorage.getItem(KEY_CHAT) || "{}"); } catch (_) {}
+    const blob = new Blob([JSON.stringify(packed, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "catalog.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+
+  function rewireExport() {
+    const exp = document.getElementById("export-cat");
+    if (!exp) return;
+    const neu = exp.cloneNode(true);
+    exp.parentNode.replaceChild(neu, exp);
+    neu.addEventListener("click", exportHouse);
   }
 
   function bootExtras() {
@@ -193,31 +216,8 @@
       if (edPop) edPop.hidden = true;
       location.reload();
     });
-
-    const exp = document.getElementById("export-cat");
-    if (exp) {
-      const neu = exp.cloneNode(true);
-      exp.parentNode.replaceChild(neu, exp);
-      neu.addEventListener("click", async () => {
-        let cat = loadCat();
-        if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
-        const packed = JSON.parse(JSON.stringify(cat));
-        const map = lyricsMap();
-        packed.tracks = packed.tracks.map((t) => {
-          const copy = Object.assign({}, t);
-          if (map[t.id]) copy.lyrics = map[t.id];
-          return copy;
-        });
-        packed.exportedAt = new Date().toISOString();
-        try { packed.chats = JSON.parse(localStorage.getItem(KEY_CHAT) || "{}"); } catch (_) {}
-        const blob = new Blob([JSON.stringify(packed, null, 2)], { type: "application/json" });
-        const a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = "catalog.json";
-        a.click();
-        URL.revokeObjectURL(a.href);
-      });
-    }
+    rewireExport();
+    setTimeout(rewireExport, 1200);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootExtras);
