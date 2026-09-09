@@ -40,6 +40,15 @@
         <button class="btn" id="ai-open" type="button">ai settings</button>
         <input id="import-file" type="file" accept="application/json,.json" hidden />
       </div>
+      <div class="rail-label" style="margin-top:22px">ingest links</div>
+      <p class="rail-note">Paste SoundCloud URLs or upload a .txt list. Cover, id, and a hook get filled. Stays local until you export.</p>
+      <textarea id="ingest-links" class="lyric-edit" rows="6" placeholder="https://soundcloud.com/pai-dj/into-the-light&#10;https://soundcloud.com/pai-dj/did-you-know" style="margin-top:8px;font-size:12px"></textarea>
+      <div class="booth-actions">
+        <button class="btn" id="ingest-run" type="button">append crate</button>
+        <button class="btn" id="ingest-file-btn" type="button">upload list</button>
+        <input id="ingest-file" type="file" accept=".txt,.csv,text/plain,application/json,.json" hidden />
+      </div>
+      <p class="rail-note" id="ingest-state">one url per line</p>
     </aside>
     <div class="wrap">
       <header>
@@ -184,6 +193,7 @@
   </div>
   <script src="./brain.js"></script>
   <script src="./ai.js"></script>
+  <script src="./ingest.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
