@@ -155,26 +155,27 @@
     pop.hidden = false;
   }
 
-  async function tagOne(id) {
+  async function applyTags(ids, reloadId) {
     const st = document.getElementById("retag-state");
-    if (!id) {
+    const list = (ids || []).filter(Boolean);
+    if (!list.length) {
       if (st) st.textContent = "no tape selected";
       return;
     }
     const cat = await resolveCat();
-    const track = cat.tracks.find((t) => t.id === id);
-    if (!track) {
-      if (st) st.textContent = "tape not in crate: " + id;
-      return;
+    for (const id of list) {
+      const track = cat.tracks.find((t) => t.id === id);
+      if (!track) continue;
+      if (st) st.textContent = "retag " + track.title;
+      const fields = await CrateTools.retag(track);
+      track.hook = fields.hook;
+      track.note = fields.note;
+      track.genre = fields.genre;
     }
-    if (st) st.textContent = "retag " + track.title;
-    const fields = await CrateTools.retag(track);
-    track.hook = fields.hook;
-    track.note = fields.note;
-    track.genre = fields.genre;
     saveCat(cat);
-    if (st) st.textContent = "tagged " + track.title + " \u00b7 export json to keep";
-    location.hash = "#" + track.id;
+    const stay = reloadId || list[0];
+    if (st) st.textContent = "tagged \u00b7 export json to keep";
+    if (stay) location.hash = "#" + stay;
     location.reload();
   }
 
@@ -214,7 +215,7 @@
         const edit = ev.target.closest("[data-edit]");
         const tag = ev.target.closest("[data-tag]");
         if (edit) { ev.preventDefault(); ev.stopPropagation(); openEditor(edit.getAttribute("data-edit")); }
-        if (tag) { ev.preventDefault(); ev.stopPropagation(); tagOne(tag.getAttribute("data-tag")); }
+        if (tag) { ev.preventDefault(); ev.stopPropagation(); applyTags([tag.getAttribute("data-tag")], tag.getAttribute("data-tag")); }
       }, true);
     }
     const edClose = document.getElementById("edit-close");
@@ -245,10 +246,10 @@
     });
     function wire() {
       rewire("export-cat", exportHouse);
-      rewire("retag-one", () => tagOne(nowId()));
-      rewire("retag-visible", async () => {
+      rewire("retag-one", () => applyTags([nowId()], nowId()));
+      rewire("retag-visible", () => {
         const ids = Array.from(document.querySelectorAll("#grid .card")).map((el) => el.dataset.id).filter(Boolean);
-        for (const id of ids) await tagOne(id);
+        applyTags(ids, nowId());
       });
     }
     wire();
