@@ -204,6 +204,30 @@
       </form>
     </div>
   </div>
+  <div class="pop" id="edit-pop" hidden>
+    <div class="pop-card">
+      <div class="booth-head">
+        <div>
+          <div class="rail-label">tape editor</div>
+          <p class="booth-track">hook, genre, notes, plays, verses. stays local until export.</p>
+        </div>
+        <button class="btn" id="edit-close" type="button">close</button>
+      </div>
+      <form class="ai-form" onsubmit="return false">
+        <input id="ed-id" type="hidden" />
+        <label>title <input id="ed-title" /></label>
+        <label>genre <input id="ed-genre" placeholder="Cyber Trap, Country Rock, Tape…" /></label>
+        <label>hook <input id="ed-hook" /></label>
+        <label>note <input id="ed-note" /></label>
+        <label>duration <input id="ed-duration" placeholder="4:23" /></label>
+        <label>plays <input id="ed-plays" placeholder="manual until SoundCloud stats land" /></label>
+        <label>lyrics <textarea id="ed-lyrics" class="lyric-edit" rows="8"></textarea></label>
+        <div class="actions">
+          <button class="btn" id="edit-save" type="button">save tape</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <script src="./brain.js"></script>
   <script src="./ai.js"></script>
   <script src="./ingest.js"></script>
