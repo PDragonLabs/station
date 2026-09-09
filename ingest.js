@@ -1,4 +1,4 @@
-const KEY_CAT = "pdl.station.catalog";
+const INGEST_KEY = "pdl.station.catalog";
 const GENERIC = /^(trxz by [pj]|trxs by p|tracks by djpai|trx by p)?$/i;
 
 function parseSoundcloudLinks(text) {
@@ -21,17 +21,17 @@ function enrichHook(title, desc) {
   const raw = String(desc || "").replace(/https?:\/\/\S+/g, "").trim();
   const first = raw.split(/\n/)[0].trim();
   if (first && first.length > 8 && !GENERIC.test(first)) {
-    return first.length > 140 ? first.slice(0, 137) + "…" : first;
+    return first.length > 140 ? first.slice(0, 137) + "\u2026" : first;
   }
   const t = String(title || "this tape");
   const low = t.toLowerCase();
-  if (/light/.test(low)) return t + " — leave the blinds open.";
-  if (/dust|sand|sahara/.test(low)) return t + " — grit on the needle.";
-  if (/night|groove|lock|sync/.test(low)) return t + " — the room finds the grid.";
-  if (/road|headlight|bridge|cross/.test(low)) return t + " — windows down. don't ask where.";
-  if (/ghost|glitch|protocol|binary|circuit|firewall/.test(low)) return t + " — still in the machine.";
-  if (/know|silent|exit/.test(low)) return t + " — say it once. let the tape keep it.";
-  return t + " — leave the deck on.";
+  if (/light/.test(low)) return t + " \u2014 leave the blinds open.";
+  if (/dust|sand|sahara/.test(low)) return t + " \u2014 grit on the needle.";
+  if (/night|groove|lock|sync/.test(low)) return t + " \u2014 the room finds the grid.";
+  if (/road|headlight|bridge|cross/.test(low)) return t + " \u2014 windows down. don't ask where.";
+  if (/ghost|glitch|protocol|binary|circuit|firewall/.test(low)) return t + " \u2014 still in the machine.";
+  if (/know|silent|exit/.test(low)) return t + " \u2014 say it once. let the tape keep it.";
+  return t + " \u2014 leave the deck on.";
 }
 
 function guessGenre(title, desc) {
@@ -71,7 +71,7 @@ async function oembedTrack(url) {
 
 function loadHouse(house) {
   try {
-    const stored = JSON.parse(localStorage.getItem(KEY_CAT));
+    const stored = JSON.parse(localStorage.getItem(INGEST_KEY));
     if (stored && Array.isArray(stored.tracks)) return stored;
   } catch (_) {}
   return house;
@@ -83,7 +83,7 @@ async function ingestText(text, statusEl) {
     if (statusEl) statusEl.textContent = "no soundcloud track links found";
     return 0;
   }
-  if (statusEl) statusEl.textContent = "pulling " + urls.length + "…";
+  if (statusEl) statusEl.textContent = "pulling " + urls.length + "\u2026";
   const house = await fetch("./catalog.json").then((r) => r.json());
   const catalog = JSON.parse(JSON.stringify(loadHouse(house)));
   const have = {};
@@ -108,19 +108,35 @@ async function ingestText(text, statusEl) {
       failed.push(slug);
     }
   }
-  if (added) {
-    localStorage.setItem(KEY_CAT, JSON.stringify(catalog));
-  }
+  if (added) localStorage.setItem(INGEST_KEY, JSON.stringify(catalog));
   if (statusEl) {
     statusEl.textContent = added
-      ? ("appended " + added + (failed.length ? " · " + failed.length + " blocked by cors" : "") + " · export json to keep it")
-      : (failed.length ? "soundcloud blocked the browser. paste the same list in Actions → Sync crate." : "already in the crate");
+      ? ("appended " + added + (failed.length ? " \u00b7 " + failed.length + " blocked" : "") + " \u00b7 export json to keep it")
+      : (failed.length ? "soundcloud blocked the browser. paste the same list in Actions \u2192 Sync crate." : "already in the crate");
   }
   if (added) location.reload();
   return added;
 }
 
+function applyCursorIfPresent() {
+  const names = ["sprite-1xo.png", "sprite-1x.png", "pointer.png", "cursor.png"];
+  function next() {
+    const name = names.shift();
+    if (!name) return;
+    const img = new Image();
+    img.onload = function () {
+      const val = 'url("' + name + '") 4 4, pointer';
+      document.documentElement.style.setProperty("--cursor", val);
+      document.body.style.cursor = val;
+    };
+    img.onerror = next;
+    img.src = name;
+  }
+  next();
+}
+
 function bootIngest() {
+  applyCursorIfPresent();
   const area = document.getElementById("ingest-links");
   const btn = document.getElementById("ingest-run");
   const fileBtn = document.getElementById("ingest-file-btn");
