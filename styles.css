@@ -6,7 +6,7 @@
   --lamp: #e24a32;
   --line: rgba(212, 176, 138, 0.28);
   --rail: 220px;
-  --cursor: url("sprite-1x.png") 4 4, pointer;
+  --cursor: pointer;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
@@ -16,7 +16,7 @@ body {
   color: var(--ink);
   min-height: 100vh;
   overflow-x: hidden;
-  cursor: url("sprite-1x.png") 4 4, pointer;
+  cursor: pointer;
 }
 .atmos {
   position: fixed; inset: 0;
