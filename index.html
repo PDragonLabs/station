@@ -137,8 +137,21 @@
           <span>tune</span>
           <input id="q" type="search" placeholder="search the crate…" autocomplete="off" />
         </label>
+        <label class="search">
+          <span>sort</span>
+          <select id="sort">
+            <option value="crate">crate order</option>
+            <option value="title">title</option>
+            <option value="genre">genre</option>
+            <option value="duration">duration</option>
+            <option value="plays">plays</option>
+          </select>
+        </label>
+        <button class="btn" id="retag-one" type="button">ai tag this</button>
+        <button class="btn" id="retag-visible" type="button">ai tag visible</button>
         <div id="count" class="count"></div>
       </div>
+      <p class="rail-note" id="retag-state">sorter + helper · plays need a plays field in the json</p>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
         Verses and the model sit on one desk. Settings slide in from the right.
@@ -194,6 +207,7 @@
   <script src="./brain.js"></script>
   <script src="./ai.js"></script>
   <script src="./ingest.js"></script>
+  <script src="./crate-tools.js"></script>
   <script src="./app.js"></script>
 </body>
 </html>
