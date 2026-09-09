@@ -11,7 +11,13 @@
 }
 .ai-form { display: grid; gap: 10px; margin: 12px 0; }
 .ai-form label { display: grid; gap: 4px; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted, #9a7f72); }
-.ai-form input, .ai-form select {
+.ai-form input, .ai-form select, .ai-form textarea {
   background: rgba(0,0,0,0.45); border: 1px solid var(--line, rgba(212,176,138,0.28));
   color: var(--ink, #f0e2d0); padding: 8px 10px; font: inherit; text-transform: none; letter-spacing: 0;
+}
+.card-tools { display: flex; gap: 8px; margin-top: 8px; }
+.card-tools .btn { padding: 4px 8px; font-size: 10px; }
+.search select {
+  background: rgba(0,0,0,0.45); border: 1px solid var(--line, rgba(212,176,138,0.28));
+  color: var(--ink, #f0e2d0); padding: 8px 10px; font: inherit;
 }
