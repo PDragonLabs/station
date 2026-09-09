@@ -92,6 +92,7 @@ async function boot() {
   let overlay = loadJSON(KEY_LYRICS, {});
   let tracks = catalog.tracks;
   let genre = "";
+  let sortBy = "crate";
   let index = 0;
 
   document.getElementById("canonical").href = catalog.canonical || house.canonical;
@@ -99,9 +100,13 @@ async function boot() {
 
   function setState() {
     document.getElementById("tagline").textContent = catalog.tagline || house.tagline;
-    document.getElementById("booth-state").textContent = local ? "local crate loaded" : "house catalog · " + tracks.length;
+    document.getElementById("booth-state").textContent = local ? "local crate loaded" : "house catalog \u00b7 " + tracks.length;
   }
-  function visible() { return tracks.filter((t) => matches(t, q.value.trim(), genre)); }
+  function arrange(list) {
+    if (window.CrateTools && CrateTools.arrange) return CrateTools.arrange(list, sortBy);
+    return list;
+  }
+  function visible() { return arrange(tracks.filter((t) => matches(t, q.value.trim(), genre))); }
 
   function fireAsk(text) {
     const input = document.getElementById("ai-line");
@@ -131,7 +136,7 @@ async function boot() {
     document.getElementById("lyric-view").textContent = text || "no verses on this tape yet";
     document.getElementById("lyric-edit").value = text;
     document.getElementById("lyric-state").textContent = overlay[track.id]
-      ? "private · this browser"
+      ? "private \u00b7 this browser"
       : (track.lyrics ? "from json" : "empty");
   }
   function renderChat() {
@@ -204,7 +209,7 @@ async function boot() {
       btn.type = "button";
       btn.className = "genre" + (g === genre ? " on" : "");
       const n = g ? tracks.filter((t) => t.genre === g).length : tracks.length;
-      btn.textContent = (g || "All stations") + " · " + n;
+      btn.textContent = (g || "All stations") + " \u00b7 " + n;
       btn.addEventListener("click", () => {
         genre = g;
         renderGenres();
@@ -224,8 +229,8 @@ async function boot() {
       const btn = document.createElement("button");
       btn.className = "card";
       btn.dataset.id = track.id;
-      const dur = track.duration ? " · " + track.duration : "";
-      const hasL = versesFor(track, overlay) ? " · verses" : "";
+      const dur = track.duration ? " \u00b7 " + track.duration : "";
+      const hasL = versesFor(track, overlay) ? " \u00b7 verses" : "";
       btn.innerHTML =
         '<img src="' + (track.artwork || "") + '" alt="">' +
         '<div class="copy"><h2>' + track.title + "</h2>" +
@@ -261,6 +266,35 @@ async function boot() {
   document.getElementById("prev").addEventListener("click", () => step(-1));
   document.getElementById("next").addEventListener("click", () => step(1));
   q.addEventListener("input", renderList);
+  const sortEl = document.getElementById("sort");
+  if (sortEl) sortEl.addEventListener("change", () => { sortBy = sortEl.value; renderList(); });
+  async function runRetag(list) {
+    const st = document.getElementById("retag-state");
+    if (!window.CrateTools || !CrateTools.retag) {
+      if (st) st.textContent = "helper missing";
+      return;
+    }
+    for (const t of list) {
+      if (st) st.textContent = "retag " + t.title;
+      try {
+        const fields = await CrateTools.retag(t);
+        if (fields.hook) t.hook = fields.hook;
+        if (fields.note) t.note = fields.note;
+        if (fields.genre) t.genre = fields.genre;
+      } catch (err) {
+        if (st) st.textContent = "fail \u00b7 " + err.message;
+        return;
+      }
+    }
+    saveJSON(KEY_CAT, catalog);
+    local = true;
+    refresh(tracks[index] && tracks[index].id);
+    if (st) st.textContent = "tagged \u00b7 export json to keep";
+  }
+  const r1 = document.getElementById("retag-one");
+  if (r1) r1.addEventListener("click", () => tracks[index] && runRetag([tracks[index]]));
+  const rv = document.getElementById("retag-visible");
+  if (rv) rv.addEventListener("click", () => runRetag(visible()));
   whoEl.addEventListener("change", () => localStorage.setItem(KEY_WHO, whoEl.value.trim()));
   document.getElementById("save-lyrics").addEventListener("click", () => {
     const track = tracks[index];
@@ -319,7 +353,7 @@ async function boot() {
       local = true;
       refresh();
     } catch (err) {
-      document.getElementById("booth-state").textContent = "import failed — need tracks[]";
+      document.getElementById("booth-state").textContent = "import failed \u2014 need tracks[]";
     }
   });
   document.getElementById("reset-cat").addEventListener("click", () => {
@@ -349,7 +383,7 @@ async function boot() {
     });
   }
   window.addEventListener("keydown", (e) => {
-    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+    if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
       if (e.key === "Escape") { e.target.blur(); if (e.target === q) { q.value = ""; renderList(); } }
       return;
     }
