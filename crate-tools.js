@@ -17,24 +17,31 @@ window.CrateTools = {
   localTag: function (track) {
     const t = track.title || "this tape";
     const low = t.toLowerCase();
-    let hook = track.hook || "";
-    const generic = /^(trxz by [pj]|trxs by p|tracks by djpai)?$/i;
-    if (!hook || generic.test(hook.trim())) {
+    let hook = String(track.hook || "").trim();
+    const generic = /^(trxz by [pj]|trxs by p|tracks by djpai|trx by p)?$/i;
+    if (!hook || generic.test(hook)) {
       if (/light/.test(low)) hook = t + " \u2014 leave the blinds open.";
       else if (/dust|sand|sahara/.test(low)) hook = t + " \u2014 grit on the needle.";
       else if (/night|groove|lock|sync/.test(low)) hook = t + " \u2014 the room finds the grid.";
-      else if (/road|headlight|bridge|cross/.test(low)) hook = t + " \u2014 windows down. don't ask where.";
-      else if (/ghost|glitch|protocol|binary|circuit|firewall/.test(low)) hook = t + " \u2014 still in the machine.";
+      else if (/road|headlight|bridge|cross|fork/.test(low)) hook = t + " \u2014 windows down. don't ask where.";
+      else if (/ghost|glitch|protocol|binary|circuit|firewall|digital|data|echo/.test(low)) hook = t + " \u2014 still in the machine.";
+      else if (/know|silent|exit/.test(low)) hook = t + " \u2014 say it once. let the tape keep it.";
+      else if (/stack|splash|bucket|real ones/.test(low)) hook = t + " \u2014 keep the one that hits.";
       else hook = t + " \u2014 leave the deck on.";
     }
-    let genre = track.genre || "untagged";
+    let genre = String(track.genre || "untagged").trim() || "untagged";
     if (genre === "untagged") {
-      if (/trap|glitch|protocol|binary|circuit|cyber/.test(low)) genre = "Cyber Trap";
-      else if (/country|road|headlight|bridge|dirt/.test(low)) genre = "Country Rock";
+      if (/trap|glitch|protocol|binary|circuit|cyber|digital|data|echo|firewall/.test(low)) genre = "Cyber Trap";
+      else if (/country|road|headlight|bridge|dirt|fork|rearview/.test(low)) genre = "Country Rock";
       else if (/quiet|air|ballad/.test(low)) genre = "Adult-contemporary ballad";
       else if (/803|collapse|psy/.test(low)) genre = "Psy Rock";
+      else if (/techno|love/.test(low)) genre = "Techno";
+      else if (/night|groove|lock|sync|stack|splash/.test(low)) genre = "Night Tape";
+      else if (/light|know|silent|dust|sahara/.test(low)) genre = "Liminal";
+      else genre = "Tape";
     }
-    return { hook: hook, note: hook, genre: genre };
+    const note = (track.note && !generic.test(String(track.note).trim())) ? track.note : hook;
+    return { hook: hook, note: note, genre: genre };
   },
   retag: async function (track) {
     let cfg = { provider: "device" };
@@ -58,18 +65,23 @@ window.CrateTools = {
     const headers = { "Content-Type": "application/json" };
     if (cfg.apiKey) headers.Authorization = "Bearer " + cfg.apiKey;
     const url = String(cfg.baseUrl || "").replace(/\/$/, "") + "/chat/completions";
-    const res = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error((data.error && data.error.message) || ("http " + res.status));
-    const msg = data.choices && data.choices[0] && data.choices[0].message;
-    const text = ((msg && (msg.content || msg.reasoning_content)) || "").trim();
-    const json = text.match(/\{[\s\S]*\}/);
-    if (!json) return this.localTag(track);
-    const parsed = JSON.parse(json[0]);
-    return {
-      hook: parsed.hook || track.hook,
-      note: parsed.note || parsed.hook || track.note,
-      genre: parsed.genre || track.genre
-    };
+    try {
+      const res = await fetch(url, { method: "POST", headers: headers, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error((data.error && data.error.message) || ("http " + res.status));
+      const msg = data.choices && data.choices[0] && data.choices[0].message;
+      const text = ((msg && (msg.content || msg.reasoning_content)) || "").trim();
+      const json = text.match(/\{[\s\S]*\}/);
+      if (!json) return this.localTag(track);
+      const parsed = JSON.parse(json[0]);
+      const fallback = this.localTag(track);
+      return {
+        hook: parsed.hook || fallback.hook,
+        note: parsed.note || parsed.hook || fallback.note,
+        genre: parsed.genre || fallback.genre
+      };
+    } catch (_) {
+      return this.localTag(track);
+    }
   }
 };
