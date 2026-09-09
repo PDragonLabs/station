@@ -103,6 +103,27 @@
     try { return JSON.parse(localStorage.getItem(KEY_LYRICS) || "{}"); } catch (_) { return {}; }
   }
 
+  async function resolveCat() {
+    const house = await fetch("./catalog.json").then((r) => r.json());
+    const local = loadCat();
+    if (!local || !Array.isArray(local.tracks)) return house;
+    const byId = {};
+    (house.tracks || []).forEach((t) => { byId[t.id] = Object.assign({}, t); });
+    local.tracks.forEach((t) => { byId[t.id] = Object.assign({}, byId[t.id] || {}, t); });
+    const ids = [];
+    function push(id) { if (id && byId[id] && ids.indexOf(id) === -1) ids.push(id); }
+    local.tracks.forEach((t) => push(t.id));
+    (house.tracks || []).forEach((t) => push(t.id));
+    return Object.assign({}, house, local, { tracks: ids.map((id) => byId[id]) });
+  }
+
+  function nowId() {
+    const active = document.querySelector("#grid .card.active");
+    if (active && active.dataset.id) return active.dataset.id;
+    if (window.__stationNow && window.__stationNow.track) return window.__stationNow.track.id;
+    return (location.hash || "").replace(/^#/, "");
+  }
+
   function decorateCards() {
     document.querySelectorAll("#grid .card").forEach((card) => {
       if (card.querySelector(".card-tools")) return;
@@ -116,11 +137,11 @@
     });
   }
 
-  function openEditor(id) {
+  async function openEditor(id) {
     const pop = document.getElementById("edit-pop");
-    if (!pop) return;
-    const cat = loadCat();
-    const t = ((cat && cat.tracks) || []).find((x) => x.id === id) || (window.__stationNow && window.__stationNow.track);
+    if (!pop || !id) return;
+    const cat = await resolveCat();
+    const t = (cat.tracks || []).find((x) => x.id === id);
     if (!t) return;
     document.getElementById("ed-id").value = t.id;
     document.getElementById("ed-title").value = t.title || "";
@@ -136,23 +157,29 @@
 
   async function tagOne(id) {
     const st = document.getElementById("retag-state");
-    let cat = loadCat();
-    if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
+    if (!id) {
+      if (st) st.textContent = "no tape selected";
+      return;
+    }
+    const cat = await resolveCat();
     const track = cat.tracks.find((t) => t.id === id);
-    if (!track) return;
+    if (!track) {
+      if (st) st.textContent = "tape not in crate: " + id;
+      return;
+    }
     if (st) st.textContent = "retag " + track.title;
     const fields = await CrateTools.retag(track);
     track.hook = fields.hook;
     track.note = fields.note;
     track.genre = fields.genre;
     saveCat(cat);
-    if (st) st.textContent = "tagged \u00b7 export json to keep";
+    if (st) st.textContent = "tagged " + track.title + " \u00b7 export json to keep";
+    location.hash = "#" + track.id;
     location.reload();
   }
 
   async function exportHouse() {
-    let cat = loadCat();
-    if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
+    const cat = await resolveCat();
     const packed = JSON.parse(JSON.stringify(cat));
     const map = lyricsMap();
     packed.tracks = packed.tracks.map((t) => {
@@ -170,12 +197,12 @@
     URL.revokeObjectURL(a.href);
   }
 
-  function rewireExport() {
-    const exp = document.getElementById("export-cat");
-    if (!exp) return;
-    const neu = exp.cloneNode(true);
-    exp.parentNode.replaceChild(neu, exp);
-    neu.addEventListener("click", exportHouse);
+  function rewire(id, handler) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const neu = el.cloneNode(true);
+    el.parentNode.replaceChild(neu, el);
+    neu.addEventListener("click", handler);
   }
 
   function bootExtras() {
@@ -197,8 +224,7 @@
     if (edPop) edPop.addEventListener("click", (e) => { if (e.target === edPop) edPop.hidden = true; });
     if (edSave) edSave.addEventListener("click", async () => {
       const id = document.getElementById("ed-id").value;
-      let cat = loadCat();
-      if (!cat || !cat.tracks) cat = await fetch("./catalog.json").then((r) => r.json());
+      const cat = await resolveCat();
       const track = cat.tracks.find((t) => t.id === id);
       if (!track) return;
       track.title = document.getElementById("ed-title").value.trim() || track.title;
@@ -214,10 +240,19 @@
       localStorage.setItem(KEY_LYRICS, JSON.stringify(map));
       saveCat(cat);
       if (edPop) edPop.hidden = true;
+      location.hash = "#" + track.id;
       location.reload();
     });
-    rewireExport();
-    setTimeout(rewireExport, 1200);
+    function wire() {
+      rewire("export-cat", exportHouse);
+      rewire("retag-one", () => tagOne(nowId()));
+      rewire("retag-visible", async () => {
+        const ids = Array.from(document.querySelectorAll("#grid .card")).map((el) => el.dataset.id).filter(Boolean);
+        for (const id of ids) await tagOne(id);
+      });
+    }
+    wire();
+    setTimeout(wire, 1200);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bootExtras);
