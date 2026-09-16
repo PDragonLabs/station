@@ -10,6 +10,94 @@
   ],
   "tracks": [
     {
+      "id": "rust-on-glass-v6",
+      "title": "Rust on Glass v6",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/rust-on-glass-v6",
+      "trackId": "2401155600",
+      "artwork": "https://i1.sndcdn.com/artworks-LbVjXAVPn0asy4Pw-m9f2XA-t500x500.jpg",
+      "hook": "Rust on Glass v6 — leave the deck on.",
+      "note": "Rust on Glass v6 — leave the deck on."
+    },
+    {
+      "id": "bo-da",
+      "title": "BO DA",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/bo-da",
+      "trackId": "2400431115",
+      "artwork": "https://i1.sndcdn.com/artworks-Wty2Shfr8vLzjqd6-cUGT3g-t500x500.jpg",
+      "hook": "BO DA — leave the deck on.",
+      "note": "BO DA — leave the deck on."
+    },
+    {
+      "id": "reciept-light",
+      "title": "Reciept Light",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/reciept-light",
+      "trackId": "2399805918",
+      "artwork": "https://i1.sndcdn.com/artworks-adcGYndBNigMig20-grdbWg-t500x500.jpg",
+      "hook": "Reciept Light — leave the blinds open.",
+      "note": "Reciept Light — leave the blinds open."
+    },
+    {
+      "id": "way-you-look-at-me",
+      "title": "Way You Look At Me",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/way-you-look-at-me",
+      "trackId": "2399513304",
+      "artwork": "https://i1.sndcdn.com/artworks-ozoADcbHlymdqZdl-QEtmIA-t500x500.jpg",
+      "hook": "Way You Look At Me — leave the deck on.",
+      "note": "Way You Look At Me — leave the deck on."
+    },
+    {
+      "id": "cyber-soul-spark",
+      "title": "Cyber Soul Spark",
+      "artist": "PDRAGONLABS",
+      "genre": "Cyber Trap",
+      "soundcloud": "https://soundcloud.com/pai-dj/cyber-soul-spark",
+      "trackId": "2399102313",
+      "artwork": "https://i1.sndcdn.com/artworks-gh25p8EBXtijxzJS-3lfKgA-t500x500.jpg",
+      "hook": "Cyber Soul Spark — leave the deck on.",
+      "note": "Cyber Soul Spark — leave the deck on."
+    },
+    {
+      "id": "hold-the-drop-hold-the-name",
+      "title": "Hold the Drop, Hold the Name",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/hold-the-drop-hold-the-name",
+      "trackId": "2399075901",
+      "artwork": "https://i1.sndcdn.com/artworks-GUj8XP3k9Co9UjTl-tD1TDw-t500x500.jpg",
+      "hook": "Hold the Drop, Hold the Name — leave the deck on.",
+      "note": "Hold the Drop, Hold the Name — leave the deck on."
+    },
+    {
+      "id": "left-lane-right-lane-v",
+      "title": "Left Lane, Right Lane V",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/left-lane-right-lane-v",
+      "trackId": "2398825563",
+      "artwork": "https://i1.sndcdn.com/artworks-Fry64KYHY2LHwIDz-ycO6vA-t500x500.jpg",
+      "hook": "Left Lane, Right Lane V — leave the deck on.",
+      "note": "Left Lane, Right Lane V — leave the deck on."
+    },
+    {
+      "id": "462-hard-work-still-in-it",
+      "title": "462 Hard Work  -Still in IT",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/462-hard-work-still-in-it",
+      "trackId": "2398744734",
+      "artwork": "https://i1.sndcdn.com/artworks-3p5PCbvlzF83EBe0-Rgytkw-t500x500.jpg",
+      "hook": "462 Hard Work  -Still in IT — leave the deck on.",
+      "note": "462 Hard Work  -Still in IT — leave the deck on."
+    },
+    {
       "id": "neon-pulse6-6",
       "title": "Neon Pulse6",
       "artist": "PDRAGONLABS",
