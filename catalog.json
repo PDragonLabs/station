@@ -1,1 +1,101 @@
-PLACEHOLDER_FOR_FULL_CONTENT
+{
+  "station": "PDRAGONLABS Station",
+  "tagline": "SoundCloud is the deck. This is the room.",
+  "canonical": "https://soundcloud.com/pai-dj",
+  "satellite": "https://soundcloud.com/j-kast-603838038",
+  "featured": [
+    "clear-reply",
+    "a-minor-arp",
+    "even-in-love-stay"
+  ],
+  "tracks": [
+    {
+      "id": "clear-reply",
+      "title": "Clear Reply",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/clear-reply",
+      "trackId": "2420699292",
+      "artwork": "https://i1.sndcdn.com/artworks-CymtKys0uOWhBllX-xL4XwA-t500x500.jpg",
+      "hook": "PDRAGONLABS LMG PMG DJPai",
+      "note": "PDRAGONLABS LMG PMG DJPai"
+    },
+    {
+      "id": "a-minor-arp",
+      "title": "A Minor Arp",
+      "artist": "PDRAGONLABS",
+      "genre": "Techno",
+      "soundcloud": "https://soundcloud.com/pai-dj/a-minor-arp",
+      "trackId": "2418740406",
+      "artwork": "https://i1.sndcdn.com/artworks-UzNn3c8z9KbTFFoN-ZP6oDA-t500x500.jpg",
+      "hook": "A Minor Arp",
+      "note": "A Minor Arp"
+    },
+    {
+      "id": "even-in-love-stay",
+      "title": "Even in Love Stay",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/even-in-love-stay",
+      "trackId": "2418406977",
+      "artwork": "https://i1.sndcdn.com/artworks-LKuwyP87kSZ0rBqy-hvhXMA-t500x500.jpg",
+      "hook": "Even in Love Stay — leave the deck on.",
+      "note": "Even in Love Stay — leave the deck on."
+    },
+    {
+      "id": "the-fire-turns-to-stone",
+      "title": "The Fire Turns to Stone",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/the-fire-turns-to-stone",
+      "trackId": "2418408654",
+      "artwork": "https://i1.sndcdn.com/artworks-RGaFgIVScA5grJyx-LBqKqA-t500x500.jpg",
+      "hook": "The Fire Turns to Stone — leave the deck on.",
+      "note": "The Fire Turns to Stone — leave the deck on."
+    },
+    {
+      "id": "even-in-love",
+      "title": "Even in Love",
+      "artist": "PDRAGONLABS",
+      "genre": "Techno",
+      "soundcloud": "https://soundcloud.com/pai-dj/even-in-love",
+      "trackId": "2417357598",
+      "artwork": "https://i1.sndcdn.com/artworks-jNBoxpG1LP1tR8Cn-aQWz7g-t500x500.jpg",
+      "hook": "Even In Love",
+      "note": "Even In Love"
+    },
+    {
+      "id": "melting-away",
+      "title": "Melting Away",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/melting-away",
+      "trackId": "2417283180",
+      "artwork": "https://i1.sndcdn.com/artworks-TEOXyXi2roIZP6zL-NBp9vw-t500x500.jpg",
+      "hook": "Melting Away — leave the deck on.",
+      "note": "Melting Away — leave the deck on."
+    },
+    {
+      "id": "its-all-good-between-us",
+      "title": "It's All Good Between Us",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/its-all-good-between-us",
+      "trackId": "2416714011",
+      "artwork": "https://i1.sndcdn.com/artworks-Dau0MgtBcv3Lnhcv-Yp7nJA-t500x500.jpg",
+      "hook": "It's All Good Between Us — leave the deck on.",
+      "note": "It's All Good Between Us — leave the deck on."
+    },
+    {
+      "id": "sunny-saturdays",
+      "title": "Sunny Saturdays",
+      "artist": "PDRAGONLABS",
+      "genre": "untagged",
+      "soundcloud": "https://soundcloud.com/pai-dj/sunny-saturdays",
+      "trackId": "2416713420",
+      "artwork": "https://i1.sndcdn.com/artworks-bPrz25KRG9TNtIRx-Tty17Q-t500x500.jpg",
+      "hook": "Sunny Saturdays — leave the deck on.",
+      "note": "Sunny Saturdays — leave the deck on."
+    }
+  ]
+}
