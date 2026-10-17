@@ -6,7 +6,10 @@
   "featured": [
     "clear-reply",
     "a-minor-arp",
-    "even-in-love-stay"
+    "even-in-love-stay",
+    "803",
+    "the-quiet-air",
+    "down-this-road"
   ],
   "tracks": [
     {
@@ -17,8 +20,19 @@
       "soundcloud": "https://soundcloud.com/pai-dj/clear-reply",
       "trackId": "2420699292",
       "artwork": "https://i1.sndcdn.com/artworks-CymtKys0uOWhBllX-xL4XwA-t500x500.jpg",
-      "hook": "Clear Reply — leave the deck on.",
-      "note": "Clear Reply — leave the deck on."
+      "hook": "PDRAGONLABS LMG PMG DJPai",
+      "note": "PDRAGONLABS LMG PMG DJPai"
+    },
+    {
+      "id": "a-minor-arp",
+      "title": "A Minor Arp",
+      "artist": "PDRAGONLABS",
+      "genre": "Techno",
+      "soundcloud": "https://soundcloud.com/pai-dj/a-minor-arp",
+      "trackId": "2418740406",
+      "artwork": "https://i1.sndcdn.com/artworks-UzNn3c8z9KbTFFoN-ZP6oDA-t500x500.jpg",
+      "hook": "A Minor Arp",
+      "note": "A Minor Arp"
     }
   ]
 }
