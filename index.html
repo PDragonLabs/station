@@ -33,7 +33,6 @@
       <p class="rail-note">Your SoundCloud tags. New <code>genre</code> grows this list.</p>
       <div class="rail-label" style="margin-top:16px">your local booth</div>
       <p class="rail-note" id="booth-state">house catalog</p>
-      <p class="rail-note" style="margin-top:4px;color:#e24a32;font-size:10.5px">Local only. Export JSON or it vanishes (cache clear / new device). Import to restore.</p>
       <div class="booth-actions">
         <button class="btn" id="export-cat" type="button">export my booth</button>
         <button class="btn" id="import-btn" type="button">import booth</button>
@@ -42,7 +41,7 @@
         <input id="import-file" type="file" accept="application/json,.json" hidden />
       </div>
       <div class="rail-label" style="margin-top:16px">ingest links</div>
-      <p class="rail-note">Paste SoundCloud URLs or upload a .txt list. Cover, id, and a hook get filled. These stay local until you export your booth.</p>
+      <p class="rail-note">Paste SoundCloud URLs or upload a .txt list. Cover, id, and a hook get filled.</p>
       <textarea id="ingest-links" class="lyric-edit" rows="5" placeholder="https://soundcloud.com/pai-dj/into-the-light&#10;https://soundcloud.com/pai-dj/did-you-know" style="margin-top:6px;font-size:12px"></textarea>
       <div class="booth-actions">
         <button class="btn" id="ingest-run" type="button">append crate</button>
@@ -57,6 +56,10 @@
         <h1>Station</h1>
         <p class="tag" id="tagline">SoundCloud is the deck. This is the room.</p>
       </header>
+      <div class="local-bar">
+        <strong>scratch pad · local only</strong>
+        Verses, chat, notes, and booth edits stay in this browser. Export a JSON backup or they vanish on cache clear / new device. Import to restore.
+      </div>
       <section class="promo" id="promo" aria-label="Attractors"></section>
       <section class="stage">
         <div class="poster">
@@ -85,7 +88,6 @@
         </div>
       </section>
       <section class="desk" aria-label="Scratch pad">
-        <p class="rail-note" style="margin:0 0 12px;color:#d4b08a">scratch pad — local only. verses, chat, and notes stay in this browser until you export your booth.</p>
         <section class="sheet" aria-label="Lyrics">
           <div class="booth-head">
             <div>
@@ -156,7 +158,7 @@
       <p class="rail-note" id="retag-state">sorter + helper · plays need a plays field in the json</p>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        Middle is the scratch pad — local to this browser. Export your booth to keep verses, notes, and chats.
+        Scratch pad and booth are local to this browser. Export to keep them.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
