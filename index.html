@@ -84,17 +84,18 @@
           </div>
         </div>
       </section>
-      <section class="desk" aria-label="Verses and chat">
+      <section class="desk" aria-label="Scratch pad">
+        <p class="rail-note" style="margin:0 0 12px;color:#d4b08a">scratch pad — local only. verses, chat, and notes stay in this browser until you export your booth.</p>
         <section class="sheet" aria-label="Lyrics">
           <div class="booth-head">
             <div>
-              <div class="rail-label">lyrics · stays in this browser</div>
+              <div class="rail-label">lyrics · scratch pad</div>
               <p class="booth-track" id="lyric-title">—</p>
             </div>
             <span class="rail-note" id="lyric-state">no verses yet</span>
           </div>
           <pre id="lyric-view" class="lyric-view"></pre>
-          <textarea id="lyric-edit" class="lyric-edit" rows="10" placeholder="paste verses here. they stay only in this browser — export your booth to keep them."></textarea>
+          <textarea id="lyric-edit" class="lyric-edit" rows="10" placeholder="paste verses here. scratch pad — stays in this browser. export booth to keep."></textarea>
           <div class="actions">
             <button class="btn" id="save-lyrics" type="button">save verses</button>
           </div>
@@ -102,7 +103,7 @@
         <section class="talk brain" aria-label="Station brain">
           <div class="booth-head">
             <div>
-              <div class="rail-label">chat · this tape</div>
+              <div class="rail-label">chat · scratch pad</div>
               <p class="booth-track">drop one line, or the whole reply if you want the bar.</p>
             </div>
             <span class="rail-note" id="brain-state">on-device</span>
@@ -122,14 +123,14 @@
       <section class="booth" aria-label="Song chat">
         <div class="booth-head">
           <div>
-            <div class="rail-label">song notes · local only</div>
+            <div class="rail-label">song notes · scratch pad</div>
             <p class="booth-track" id="chat-track">—</p>
           </div>
           <input id="who" class="who" maxlength="24" placeholder="your name" />
         </div>
         <div class="log" id="log"></div>
         <form class="say" id="say">
-          <input id="line" maxlength="280" placeholder="leave a line on this track… (stays in this browser)" autocomplete="off" />
+          <input id="line" maxlength="280" placeholder="leave a line on this track… (scratch pad, local only)" autocomplete="off" />
           <button class="btn" type="submit">send</button>
         </form>
       </section>
@@ -155,7 +156,7 @@
       <p class="rail-note" id="retag-state">sorter + helper · plays need a plays field in the json</p>
       <section class="grid" id="grid" aria-label="A-sides"></section>
       <footer>
-        Verses, notes, and the model sit on one desk — all local to this browser. Export your booth to keep them.
+        Middle is the scratch pad — local to this browser. Export your booth to keep verses, notes, and chats.
         <div class="links">
           <a id="canonical" href="https://soundcloud.com/pai-dj">main catalog · pai-dj</a>
           <a id="satellite" href="https://soundcloud.com/j-kast-603838038">satellite · j-kast</a>
